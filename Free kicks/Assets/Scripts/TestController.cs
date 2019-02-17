@@ -5,8 +5,8 @@ using UnityEngine;
 public class TestController : MonoBehaviour
 {
     public float time = 10f;
-    public int answer = 0;
-    public float isCorrect = 0f;
+    public int answer = -1;
+    public int correctAnswer = 3;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,20 +19,18 @@ public class TestController : MonoBehaviour
         
     }
 
-    public Vector2 promptAnswer()
+    public void promptAnswer(int ans)
     {
-        gameObject.SetActive(true);
-
-        while (answer != -1)
-        {
-
-        }
-        return new Vector2(isCorrect, time);
-
+        correctAnswer = ans;
+        time = 0;
+        answer = -1;
     }
 
-    public void Answer()
+    public void Answer(int option)
     {
-        answer = 0;
+        answer = option;
+        GameObject controller = GameObject.Find("Controller");
+        GameController gc = controller.GetComponent<GameController>();
+        gc.checkAnswer(answer);
     }
 }

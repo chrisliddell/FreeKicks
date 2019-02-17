@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public int id;
+    public int team;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,7 +43,7 @@ public class PlayerController : MonoBehaviour
             Rigidbody rb = ball.GetComponent<Rigidbody>();
             rb.constraints = RigidbodyConstraints.FreezeAll;
             GameObject controller = GameObject.Find("Controller");
-            controller.GetComponent<GameController>().shoot(this.gameObject);
+            controller.GetComponent<GameController>().shootMode(this.gameObject);
         }
     }
 }

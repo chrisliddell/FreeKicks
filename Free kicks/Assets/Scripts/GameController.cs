@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
     GameObject ball;
     GameObject test;
     System.Random rand;
+    private IEnumerator coroutine;
     public Vector3[] team1DefensePositions = { new Vector3(-34.2f, 89f, -70f), new Vector3(-116f, -455f, -57f), new Vector3(-612f, -228f, -61f) };
     public Vector3[] team2DefensePositions = { new Vector3(-330f, 82f, -76f), new Vector3(-283f, -475f, -61f), new Vector3(242f, -242f, -58f) };
     public Vector3[] team1AttackPositions = { new Vector3(-330f, 82f, -76f), new Vector3(-283f, -475f, -61f), new Vector3(242f, -242f, -58f) };
@@ -18,6 +19,7 @@ public class GameController : MonoBehaviour
     public bool playing;
     public int stage;
     public int currentPlayer;
+    public int currentAnswer;
 
     // Start is called before the first frame update
     void Start()
@@ -42,10 +44,11 @@ public class GameController : MonoBehaviour
     {
         playing = true;
         stage = 0; // 0 is defending, 1 is attacking, 2 is striking 
-        
+        getPositions();
         ball.GetComponent<BallController>().resetPos();
         float r = rand.Next(0, 2);
         Debug.Log(r);
+        reset();
         if (r > 0f)
         {
             Debug.Log("Player 1 starts");
@@ -58,14 +61,6 @@ public class GameController : MonoBehaviour
             currentPlayer = 2;
             ball.GetComponent<Rigidbody>().AddForce(new Vector3(1, 0, 0) * 1200);
         }
-
-        playing = true;
-        getPositions();
-        while (playing)
-        {
-            turn();
-        }
-        
     }
 
     public void getPositions()
@@ -112,7 +107,6 @@ public class GameController : MonoBehaviour
 
     public void reset() {
         stage = 0;
-        currentPlayer = 1;
         Camera.main.orthographic = true;
         Camera.main.fieldOfView = cameraFOV;
         GameObject camera = GameObject.Find("Main Camera");
@@ -164,6 +158,8 @@ public class GameController : MonoBehaviour
             player.transform.position = team2DefensePositions[2];
 
             showQuestion();
+
+           
             if(currentPlayer == 1)
             {
                 //
@@ -209,8 +205,10 @@ public class GameController : MonoBehaviour
         currentPlayer = 1 == currentPlayer ? 2 : 1;
     }
 
-    public void shoot(GameObject player)
+    public void shootMode(GameObject player)
     {
+        PlayerController pc = player.GetComponent<PlayerController>();
+        movePlayers(pc.id, pc.team);
         GameObject camera = GameObject.Find("Main Camera");
         if (player.transform.rotation.z > 0)
         {
@@ -228,14 +226,84 @@ public class GameController : MonoBehaviour
             camera.transform.LookAt(GameObject.Find("goal1").transform);
             player.GetComponent<MeshRenderer>().enabled = false;
         }
-
+        showQuestion();
     }
 
-    Vector2 showQuestion()
+    public void showQuestion()
     {
         test.SetActive(true);
         var tc = test.GetComponent<TestController>();
-        Debug.Log(tc.time);
-        return tc.promptAnswer();
     }
+
+    public void checkAnswer(int ans)
+    {
+        if(ans == currentAnswer)
+        {
+            Debug.Log("Correct");
+        }
+        else
+        {
+            Debug.Log("Incorrect");
+            reset();
+            if (currentPlayer == 1)
+            {
+                currentPlayer = 2;
+                Debug.Log("Player 2 starts.");
+                ball.GetComponent<Rigidbody>().AddForce(new Vector3(1, 0, 0) * 1200);
+            }
+            else
+            {
+                currentPlayer = 1;
+                Debug.Log("Player 1 starts.");
+                ball.GetComponent<Rigidbody>().AddForce(new Vector3(-1, 0, 0) * 1200);
+            }
+        }
+        test.SetActive(false);
+    }
+
+    public void movePlayers(int id, int team)
+    {
+        if (stage == 0) return;
+        GameObject auxPlayer1, auxPlayer2;
+        if (team == 1) {
+            if (id == 1)
+            {
+                auxPlayer1 = GameObject.Find("Player1B");
+                auxPlayer2 = GameObject.Find("Player1C");
+            }
+            else if (id == 2)
+            {
+                auxPlayer1 = GameObject.Find("Player1A");
+                auxPlayer2 = GameObject.Find("Player1C");
+            }
+            else
+            {
+                auxPlayer1 = GameObject.Find("Player1A");
+                auxPlayer2 = GameObject.Find("Player1B");
+            }
+            auxPlayer1.transform.position += new Vector3(3, 0, 0);
+            auxPlayer2.transform.position += new Vector3(3, 0, 0);
+        }
+        else
+        {
+            if (id == 1)
+            {
+                auxPlayer1 = GameObject.Find("Player2B");
+                auxPlayer2 = GameObject.Find("Player2C");
+            }
+            else if (id == 2)
+            {
+                auxPlayer1 = GameObject.Find("Player2A");
+                auxPlayer2 = GameObject.Find("Player2C");
+            }
+            else
+            {
+                auxPlayer1 = GameObject.Find("Player2A");
+                auxPlayer2 = GameObject.Find("Player2B");
+            }
+            auxPlayer1.transform.position -= new Vector3(3, 0, 0);
+            auxPlayer2.transform.position -= new Vector3(3, 0, 0);
+        }
+    }
+
 }
