@@ -7,6 +7,8 @@ public class GameController : MonoBehaviour
 {
     GameObject ball;
     GameObject test;
+    GameObject goal1;
+    GameObject goal2;
     System.Random rand;
     private IEnumerator coroutine;
     public Vector3[] team1DefensePositions = { new Vector3(-34.2f, 89f, -70f), new Vector3(-116f, -455f, -57f), new Vector3(-612f, -228f, -61f) };
@@ -25,6 +27,9 @@ public class GameController : MonoBehaviour
     void Start()
     {
         GameObject camera = GameObject.Find("Main Camera");
+
+        goal1 = GameObject.Find("goal1");
+        goal2 = GameObject.Find("goal2");
         ball = GameObject.Find("Ball");
         cameraPos = camera.transform.position;
         cameraRot = camera.transform.rotation;
@@ -54,12 +59,14 @@ public class GameController : MonoBehaviour
             Debug.Log("Player 1 starts");
             currentPlayer = 1;
             ball.GetComponent<Rigidbody>().AddForce(new Vector3(-1, 0, 0) * 1200);
+
         }
         else
         {
             Debug.Log("Player 2 starts");
             currentPlayer = 2;
             ball.GetComponent<Rigidbody>().AddForce(new Vector3(1, 0, 0) * 1200);
+			
         }
     }
 
@@ -103,6 +110,7 @@ public class GameController : MonoBehaviour
         team2DefensePositions[2] = pos;
         pos.x -= 54f;
         team2AttackPositions[2] = pos;
+
     }
 
     public void reset() {
@@ -137,6 +145,9 @@ public class GameController : MonoBehaviour
         player.GetComponent<MeshRenderer>().enabled = true;
         player = GameObject.Find("Ball");
         player.GetComponent<BallController>().resetPos();
+
+        goal1.SetActive(true);
+        goal2.SetActive(true);
     }
 
     public void turn()
@@ -160,14 +171,6 @@ public class GameController : MonoBehaviour
             showQuestion();
 
            
-            if(currentPlayer == 1)
-            {
-                //
-            }
-            else
-            {
-                //
-            }
 
         }
         else if (currentPlayer == 1) {
@@ -237,9 +240,22 @@ public class GameController : MonoBehaviour
 
     public void checkAnswer(int ans)
     {
-        if(ans == currentAnswer)
+        test.SetActive(false);
+        if (ans == currentAnswer)
         {
             Debug.Log("Correct");
+			if(stage == 0){
+				if(currentPlayer == 1) //remove goal so they can see
+				{
+					GameObject.Find("goal1").SetActive(false);
+				}
+				else
+				{
+					GameObject.Find("goal2").SetActive(false);
+				}
+                StartCoroutine(Wait());
+
+			}
         }
         else
         {
@@ -258,7 +274,13 @@ public class GameController : MonoBehaviour
                 ball.GetComponent<Rigidbody>().AddForce(new Vector3(-1, 0, 0) * 1200);
             }
         }
-        test.SetActive(false);
+    }
+
+    IEnumerator Wait()
+    {
+        print(Time.time);
+        yield return new WaitUntil(() => shoot());
+        print(Time.time);
     }
 
     public void movePlayers(int id, int team)
@@ -306,4 +328,34 @@ public class GameController : MonoBehaviour
         }
     }
 
+    int count = 0;
+	public bool shoot(){
+		if (Input.GetMouseButtonDown(0)){
+            Debug.Log("Clicked");
+            RaycastHit hit = new RaycastHit();
+		    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            var select = GameObject.Find("Ball").transform;
+            Debug.DrawRay(ray.origin, ray.direction * 100, Color.cyan, 20f, false);
+            if (Physics.Raycast(ray.origin, ray.direction*100, out hit, 200f)){ // (ray, out hit, 100.0f)){
+                count++;
+                if(hit.transform.tag == "Ball")
+                {
+
+                    Debug.Log("Hit ball");
+                }
+                else
+                {
+                    if (count > 10) return true;
+                    Debug.Log("Missed Ball");
+                    return false;
+                }
+            }
+           
+            return true;
+		}
+        else
+        {
+            return false;
+        }
+	}
 }
