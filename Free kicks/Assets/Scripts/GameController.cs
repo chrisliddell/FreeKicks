@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour
     GameObject test;
     GameObject goal1;
     GameObject goal2;
+    GameObject playerWithBall;
     System.Random rand;
     private IEnumerator coroutine;
     public Vector3[] team1DefensePositions = { new Vector3(-34.2f, 89f, -70f), new Vector3(-116f, -455f, -57f), new Vector3(-612f, -228f, -61f) };
@@ -210,6 +211,7 @@ public class GameController : MonoBehaviour
 
     public void shootMode(GameObject player)
     {
+        playerWithBall = player;
         PlayerController pc = player.GetComponent<PlayerController>();
         movePlayers(pc.id, pc.team);
         GameObject camera = GameObject.Find("Main Camera");
@@ -219,7 +221,6 @@ public class GameController : MonoBehaviour
             Camera.main.fieldOfView = 30f;
             camera.transform.position = ball.transform.position + new Vector3(-6, 2, 0);
             camera.transform.LookAt(GameObject.Find("goal2").transform);
-            player.GetComponent<MeshRenderer>().enabled = false;
         }
         else
         {
@@ -227,8 +228,8 @@ public class GameController : MonoBehaviour
             Camera.main.fieldOfView = 30f;
             camera.transform.position = ball.transform.position + new Vector3(6, 2, 0);
             camera.transform.LookAt(GameObject.Find("goal1").transform);
-            player.GetComponent<MeshRenderer>().enabled = false;
         }
+        playerWithBall.gameObject.SetActive(false);
         showQuestion();
     }
 
@@ -254,11 +255,11 @@ public class GameController : MonoBehaviour
 					GameObject.Find("goal2").SetActive(false);
 				}
                 StartCoroutine(Wait());
-
-			}
+            }
         }
         else
         {
+            playerWithBall.gameObject.SetActive(true);
             Debug.Log("Incorrect");
             reset();
             if (currentPlayer == 1)
@@ -280,6 +281,7 @@ public class GameController : MonoBehaviour
     {
         print(Time.time);
         yield return new WaitUntil(() => shoot());
+        playerWithBall.gameObject.SetActive(true);
         print(Time.time);
     }
 
@@ -335,12 +337,13 @@ public class GameController : MonoBehaviour
             RaycastHit hit = new RaycastHit();
 		    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             var select = GameObject.Find("Ball").transform;
-            Debug.DrawRay(ray.origin, ray.direction * 100, Color.cyan, 20f, false);
-            if (Physics.Raycast(ray.origin, ray.direction*100, out hit, 200f)){ // (ray, out hit, 100.0f)){
+            Vector3 dir = ((select.position + ray.direction * 150f) - ray.origin).normalized * 6.2f;
+            Debug.DrawRay(ray.origin, dir, Color.cyan, 200f, true);
+            if (Physics.Raycast(ray.origin, dir, out hit, 200f)){
                 count++;
-                if(hit.transform.tag == "Ball")
+                Debug.Log("object hit: " + hit.collider.name);
+                if(hit.collider.tag == "Ball")
                 {
-
                     Debug.Log("Hit ball");
                 }
                 else
@@ -350,7 +353,6 @@ public class GameController : MonoBehaviour
                     return false;
                 }
             }
-           
             return true;
 		}
         else

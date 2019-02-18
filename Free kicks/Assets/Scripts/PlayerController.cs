@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour
 	
 	void OnTriggerEnter(Collider collider)
     {
-
         BallController ball = collider.gameObject.GetComponent<BallController>();
         if (ball != null)
         {
@@ -36,10 +35,7 @@ public class PlayerController : MonoBehaviour
                 newPos.x -= 0.4f;
                 newPos.y += 0.2f;
                 ball.transform.position = newPos; //team2
-            }/*
-                Debug.Log("Player gets ball in position:"+transform.forward*1.2f);
-            newPos.x += 0.2f;
-            ball.transform.position = transform.position+(transform.rotation/2f);*/
+            }
             Rigidbody rb = ball.GetComponent<Rigidbody>();
             rb.constraints = RigidbodyConstraints.FreezeAll;
             GameObject controller = GameObject.Find("Controller");
