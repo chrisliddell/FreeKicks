@@ -18,11 +18,13 @@ public class ArenaController : MonoBehaviour
 		
 	void OnTriggerEnter(Collider collider)
     {
-        BallController ball = collider.gameObject.GetComponent<BallController>();
+        BallController ball = collider.GetComponent<BallController>();
         if (ball != null)
         {
-			Debug.Log("Out of bounds!");
-            ball.outOfBounds(1); //param is whos in possession of the ball
+            ball.resetPos();
+            ball.setFreeze(true);
+            Debug.Log("Out of bounds!");
+            GameObject.Find("Controller").GetComponent<GameController>().changeTurns();
         }
     }
 }

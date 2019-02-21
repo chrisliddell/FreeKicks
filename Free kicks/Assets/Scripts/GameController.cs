@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 public class GameController : MonoBehaviour
@@ -9,7 +10,8 @@ public class GameController : MonoBehaviour
     GameObject test;
     GameObject goal1;
     GameObject goal2;
-    GameObject playerWithBall;
+    public GameObject playerWithBall;
+    public Slider powerSlider;
     System.Random rand;
     private IEnumerator coroutine;
     public Vector3[] team1DefensePositions = { new Vector3(-34.2f, 89f, -70f), new Vector3(-116f, -455f, -57f), new Vector3(-612f, -228f, -61f) };
@@ -19,16 +21,21 @@ public class GameController : MonoBehaviour
     Vector3 cameraPos;
     Quaternion cameraRot;
     float cameraFOV;
-    public bool playing;
+    public float power = 300f;
+    public float maxPower = 1000f;
+    public float timePressed = 0f;
+    public bool playing, passSuccesful;
     public int stage;
     public int currentPlayer;
     public int currentAnswer;
+    public float startForce = 300f;
 
     // Start is called before the first frame update
     void Start()
     {
+        passSuccesful = false;
+        powerSlider.gameObject.SetActive(false);
         GameObject camera = GameObject.Find("Main Camera");
-
         goal1 = GameObject.Find("goal1");
         goal2 = GameObject.Find("goal2");
         ball = GameObject.Find("Ball");
@@ -43,7 +50,7 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void startGame()
@@ -55,20 +62,16 @@ public class GameController : MonoBehaviour
         float r = rand.Next(0, 2);
         Debug.Log(r);
         reset();
-        if (r > 0f)
+        if (r < 0f)
         {
-            Debug.Log("Player 1 starts");
             currentPlayer = 1;
-            ball.GetComponent<Rigidbody>().AddForce(new Vector3(-1, 0, 0) * 1200);
 
         }
         else
         {
-            Debug.Log("Player 2 starts");
             currentPlayer = 2;
-            ball.GetComponent<Rigidbody>().AddForce(new Vector3(1, 0, 0) * 1200);
-			
         }
+        StartCoroutine(startDelay());
     }
 
     public void getPositions()
@@ -115,6 +118,7 @@ public class GameController : MonoBehaviour
     }
 
     public void reset() {
+        StopAllCoroutines();
         stage = 0;
         Camera.main.orthographic = true;
         Camera.main.fieldOfView = cameraFOV;
@@ -211,6 +215,14 @@ public class GameController : MonoBehaviour
 
     public void shootMode(GameObject player)
     {
+        if (player.GetComponent<PlayerController>().team != currentPlayer)
+        {
+            Debug.Log("Passed to a player of another team.");
+            passSuccesful = false;
+            return;
+        }
+        passSuccesful = true;
+        playerWithBall.gameObject.SetActive(true);
         playerWithBall = player;
         PlayerController pc = player.GetComponent<PlayerController>();
         movePlayers(pc.id, pc.team);
@@ -220,14 +232,14 @@ public class GameController : MonoBehaviour
             Camera.main.orthographic = false;
             Camera.main.fieldOfView = 30f;
             camera.transform.position = ball.transform.position + new Vector3(-6, 2, 0);
-            camera.transform.LookAt(GameObject.Find("goal2").transform);
+            camera.transform.LookAt(goal2.transform);
         }
         else
         {
             Camera.main.orthographic = false;
             Camera.main.fieldOfView = 30f;
             camera.transform.position = ball.transform.position + new Vector3(6, 2, 0);
-            camera.transform.LookAt(GameObject.Find("goal1").transform);
+            camera.transform.LookAt(goal1.transform);
         }
         playerWithBall.gameObject.SetActive(false);
         showQuestion();
@@ -248,32 +260,45 @@ public class GameController : MonoBehaviour
 			if(stage == 0){
 				if(currentPlayer == 1) //remove goal so they can see
 				{
-					GameObject.Find("goal1").SetActive(false);
+					goal1.SetActive(false);
 				}
 				else
 				{
-					GameObject.Find("goal2").SetActive(false);
+					goal2.SetActive(false);
 				}
                 StartCoroutine(Wait());
             }
         }
         else
         {
-            playerWithBall.gameObject.SetActive(true);
-            Debug.Log("Incorrect");
-            reset();
-            if (currentPlayer == 1)
-            {
-                currentPlayer = 2;
-                Debug.Log("Player 2 starts.");
-                ball.GetComponent<Rigidbody>().AddForce(new Vector3(1, 0, 0) * 1200);
-            }
-            else
-            {
-                currentPlayer = 1;
-                Debug.Log("Player 1 starts.");
-                ball.GetComponent<Rigidbody>().AddForce(new Vector3(-1, 0, 0) * 1200);
-            }
+            changeTurns();
+
+        }
+    }
+
+    public void changeTurns()
+    {
+        playerWithBall.gameObject.SetActive(true);
+        Debug.Log("Incorrect");
+        reset();
+        StartCoroutine(startDelay());
+    }
+
+    IEnumerator startDelay()
+    {
+        timePressed = Time.time;
+        yield return new WaitForSeconds(1);
+        if (currentPlayer == 1)
+        {
+            currentPlayer = 2;
+            Debug.Log("Player 2 starts.");
+            ball.GetComponent<Rigidbody>().AddForce(new Vector3(1, 0, 0) * startForce);
+        }
+        else
+        {
+            currentPlayer = 1;
+            Debug.Log("Player 1 starts.");
+            ball.GetComponent<Rigidbody>().AddForce(new Vector3(-1, 0, 0) * startForce);
         }
     }
 
@@ -281,7 +306,7 @@ public class GameController : MonoBehaviour
     {
         print(Time.time);
         yield return new WaitUntil(() => shoot());
-        playerWithBall.gameObject.SetActive(true);
+        test.SetActive(false);
         print(Time.time);
     }
 
@@ -329,8 +354,7 @@ public class GameController : MonoBehaviour
             auxPlayer2.transform.position -= new Vector3(3, 0, 0);
         }
     }
-
-    int count = 0;
+    
 	public bool shoot(){
 		if (Input.GetMouseButtonDown(0)){
             Debug.Log("Clicked");
@@ -340,15 +364,15 @@ public class GameController : MonoBehaviour
             Vector3 dir = ((select.position + ray.direction * 150f) - ray.origin).normalized * 6.2f;
             Debug.DrawRay(ray.origin, dir, Color.cyan, 200f, true);
             if (Physics.Raycast(ray.origin, dir, out hit, 200f)){
-                count++;
-                Debug.Log("object hit: " + hit.collider.name);
-                if(hit.collider.tag == "Ball")
-                {
-                    Debug.Log("Hit ball");
+                    if (hit.collider.tag == "Ball")
+                    {
+                        Debug.Log("Hit ball");
+                        powerSlider.gameObject.SetActive(true);
+                        StartCoroutine(HoldClick(dir, hit.point));
+                   
                 }
                 else
                 {
-                    if (count > 10) return true;
                     Debug.Log("Missed Ball");
                     return false;
                 }
@@ -359,5 +383,55 @@ public class GameController : MonoBehaviour
         {
             return false;
         }
+	}
+
+    IEnumerator HoldClick(Vector3 dir, Vector3 hitPoint)
+    {
+        timePressed = Time.time;
+        yield return new WaitUntil(() => releasedClick());
+        timePressed = Time.time - timePressed;
+        Vector3 strike = Vector3.Reflect(dir.normalized, Vector3.up);
+        Debug.Log("Time pressed: " + timePressed + " Power: " + timePressed * power);
+        strike.z += (ball.transform.position.z - hitPoint.z) * 5; //5is constant of angularity
+        if (timePressed * power > maxPower)
+            strike *= maxPower;
+        else
+            strike *= timePressed * power;
+        Debug.DrawRay(hitPoint, strike, Color.red, 200f, true);
+        ball.GetComponent<BallController>().setFreeze(false);
+        ball.GetComponent<Rigidbody>().AddForceAtPosition(strike, hitPoint);
+        powerSlider.value = 0;
+        powerSlider.gameObject.SetActive(false);
+		passSuccesful = false;
+        StartCoroutine(timer());
+    }
+
+    public bool releasedClick()
+    {
+        //Debug.Log("Delta time:" + Time.deltaTime);
+        powerSlider.value += 10;
+        return Input.GetMouseButtonUp(0);
+    }
+
+    IEnumerator timer()
+    {
+        timePressed = Time.time;
+        yield return new WaitForSeconds(5);
+		Debug.Log(passSuccesful);
+        if (passSuccesful)
+        {
+            Debug.Log("Pass succesful");
+        }
+        else
+        {
+            Debug.Log("Failed pass");
+            changeTurns();
+        }
+    }
+	
+	public void goal(int team)
+	{
+		passSuccesful = true;
+		changeTurns();
 	}
 }

@@ -36,24 +36,20 @@ public class BallController : MonoBehaviour
 
     public void goal(int team){
 		transform.position = startPos;
-		if(team == 1){
-			
-			
-		} else {
-			
-			
-		}
+        setFreeze(true);
+		GameObject.Find("Controller").GetComponent<GameController>().goal(team);
 	}
-	
-		
-	public void outOfBounds(int team){
-		transform.position = startPos;
-		if(team == 1){
-			
-			
-		} else {
-			
-			
-		}
-	}
+
+    public void setFreeze(bool f)
+    {
+        if (f)
+        {
+            gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+        }
+        else
+        {
+            gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+        }
+    }
+
 }
