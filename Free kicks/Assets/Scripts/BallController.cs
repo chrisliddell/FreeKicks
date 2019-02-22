@@ -11,7 +11,7 @@ public class BallController : MonoBehaviour
     {
         startPos = transform.position;
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeAll;
+        setFreeze(true);
     }
 
     // Update is called once per frame
@@ -30,8 +30,10 @@ public class BallController : MonoBehaviour
 
     public void resetPos()
     {
+        setFreeze(false);
         transform.position = startPos;
-        rb.constraints = RigidbodyConstraints.None;
+        setFreeze(true);
+        setFreeze(false);
     }
 
     public void goal(int team){

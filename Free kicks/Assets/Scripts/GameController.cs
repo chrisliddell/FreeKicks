@@ -151,6 +151,9 @@ public class GameController : MonoBehaviour
         player = GameObject.Find("Ball");
         player.GetComponent<BallController>().resetPos();
 
+        shufflePlayers(1);
+        shufflePlayers(2);
+
         goal1.SetActive(true);
         goal2.SetActive(true);
     }
@@ -266,6 +269,7 @@ public class GameController : MonoBehaviour
 				{
 					goal2.SetActive(false);
 				}
+                StopAllCoroutines();
                 StartCoroutine(Wait());
             }
         }
@@ -361,14 +365,15 @@ public class GameController : MonoBehaviour
             RaycastHit hit = new RaycastHit();
 		    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             var select = GameObject.Find("Ball").transform;
-            Vector3 dir = ((select.position + ray.direction * 150f) - ray.origin).normalized * 6.2f;
+            Vector3 dir = ((select.position + (ray.direction)*1000f) - ray.origin).normalized * 7.2f;
+            //            Vector3 dir = ((select.position + ray.direction * 300f) - ray.origin).normalized * 7.2f;
             Debug.DrawRay(ray.origin, dir, Color.cyan, 200f, true);
             if (Physics.Raycast(ray.origin, dir, out hit, 200f)){
-                    if (hit.collider.tag == "Ball")
-                    {
-                        Debug.Log("Hit ball");
-                        powerSlider.gameObject.SetActive(true);
-                        StartCoroutine(HoldClick(dir, hit.point));
+                if (hit.collider.tag == "Ball")
+                {
+                    Debug.Log("Hit ball");
+                    powerSlider.gameObject.SetActive(true);
+                    StartCoroutine(HoldClick(dir, hit.point));
                    
                 }
                 else
@@ -434,4 +439,66 @@ public class GameController : MonoBehaviour
 		passSuccesful = true;
 		changeTurns();
 	}
+
+    public void shufflePlayers(int team)
+    {
+        int count = 0;
+        GameObject player;
+        BallController bc = ball.GetComponent<BallController>();
+        Vector3 center = ball.GetComponent<BallController>().startPos + new Vector3(0, -1.4f, 0);
+        Vector3 dir;
+        int dist = 10;
+        do
+        {
+            if (team == 1)
+            {
+                dir = new Vector3(1, 0, 0);
+                if (stage == 0)
+                {
+                    player = GameObject.Find("Player1A");
+                    player.transform.position = team1DefensePositions[0];
+                    player.transform.position += new Vector3(rand.Next(-dist, dist)/10, 0, rand.Next(-dist, dist)/10);
+                    player = GameObject.Find("Player1B");
+                    player.transform.position = team1DefensePositions[1];
+                    player.transform.position += new Vector3(rand.Next(-dist, dist)/10, 0, rand.Next(-dist, dist)/10);
+
+                }
+                else
+                {
+                    player = GameObject.Find("Player1A");
+                    player.transform.position = team1AttackPositions[0];
+                    player.transform.position += new Vector3(rand.Next(-dist, dist)/10, 0, rand.Next(-dist, dist) / 10);
+                    player = GameObject.Find("Player1B");
+                    player.transform.position = team1AttackPositions[1];
+                    player.transform.position += new Vector3(rand.Next(-dist, dist) / 10, 0, rand.Next(-dist, dist) / 10);
+                }
+            }
+            else
+            {
+                dir = new Vector3(-1, 0, 0);
+                if (stage == 0)
+                {
+                    player = GameObject.Find("Player2A");
+                    player.transform.position = team2DefensePositions[0];
+                    player.transform.position += new Vector3(rand.Next(-dist, dist) / 10, 0, rand.Next(-dist, dist) / 10);
+                    player = GameObject.Find("Player2B");
+                    player.transform.position = team2DefensePositions[1];
+                    player.transform.position += new Vector3(rand.Next(-dist, dist) / 10, 0, rand.Next(-dist, dist) / 10);
+
+                }
+                else
+                {
+                    player = GameObject.Find("Player2A");
+                    player.transform.position = team2AttackPositions[0];
+                    player.transform.position += new Vector3(rand.Next(-dist, dist) / 10, 0, rand.Next(-dist, dist) / 10);
+                    player = GameObject.Find("Player2B");
+                    player.transform.position = team2AttackPositions[1];
+                    player.transform.position += new Vector3(rand.Next(-dist, dist) / 10, 0, rand.Next(-dist, dist) / 10);
+                }
+            }
+            count++;
+            Debug.DrawRay(center+new Vector3(0,0, 0.5f), dir, Color.red, 20f);
+            Debug.DrawRay(center+new Vector3(0, 0, -0.5f),dir, Color.blue, 20f);
+        } while ((Physics.Raycast(center + new Vector3(0, 0, 0.5f), dir, 10f) || Physics.Raycast(center + new Vector3(0, 0, -0.5f), dir, 10f)) && count < 5);
+    }
 }

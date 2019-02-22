@@ -28,12 +28,12 @@ public class PlayerController : MonoBehaviour
             if (transform.rotation.z > 0)
             {
                 newPos.x += 0.4f;
-                newPos.y += 0.2f;
+                newPos.y += 0.1f;
                 ball.transform.position = newPos; //team1
             } else
             {
                 newPos.x -= 0.4f;
-                newPos.y += 0.2f;
+                newPos.y += 0.1f;
                 ball.transform.position = newPos; //team2
             }
             Rigidbody rb = ball.GetComponent<Rigidbody>();
