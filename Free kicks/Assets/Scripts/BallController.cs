@@ -54,4 +54,13 @@ public class BallController : MonoBehaviour
         }
     }
 
+    public void updateAims()
+    {
+        Vector3 pos = GameObject.Find("aim1").transform.position;
+        pos.z = transform.position.z;
+        GameObject.Find("aim1").transform.position = pos;
+        pos = GameObject.Find("aim2").transform.position;
+        pos.z = transform.position.z;
+        GameObject.Find("aim2").transform.position = pos;
+    }
 }
