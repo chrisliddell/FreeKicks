@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
     GameObject goal1;
     GameObject goal2;
     public GameObject playerWithBall;
+    public GameObject enemyDefender;
     public GameObject arrowCurved;
     public GameObject arrowStraight;
     Quaternion arrowRot;
@@ -124,13 +125,15 @@ public class GameController : MonoBehaviour
     public void reset() {
         StopAllCoroutines();
         stage = -1;
+
+        enemyDefender.SetActive(true);
+        playerWithBall.SetActive(true);
         Camera.main.orthographic = true;
         Camera.main.fieldOfView = cameraFOV;
         GameObject camera = GameObject.Find("Main Camera");
         camera.transform.position = cameraPos;
         camera.transform.rotation = cameraRot; 
         ball.GetComponent<BallController>().resetPos();
-
         GameObject player;
         player = GameObject.Find("Player1A");
         player.transform.position = team1DefensePositions[0];
@@ -285,6 +288,7 @@ public class GameController : MonoBehaviour
 
     public void changeTurns()
     {
+        enemyDefender.SetActive(true);
         playerWithBall.gameObject.SetActive(true);
         Debug.Log("Incorrect");
         reset();
@@ -319,26 +323,33 @@ public class GameController : MonoBehaviour
 
     public void movePlayers(int id, int team)
     {
+        float dist;
+        string name = "";
         if (stage == 0) return;
+        if (stage == 1) dist = 8;
+        else dist = 0;
         GameObject auxPlayer1, auxPlayer2;
         if (team == 1) {
             if (id == 1)
             {
                 auxPlayer1 = GameObject.Find("Player1B");
                 auxPlayer2 = GameObject.Find("Player1C");
+                name = "Player2A";
             }
             else if (id == 2)
             {
                 auxPlayer1 = GameObject.Find("Player1A");
                 auxPlayer2 = GameObject.Find("Player1C");
+                name = "Player2B";
             }
             else
             {
                 auxPlayer1 = GameObject.Find("Player1A");
                 auxPlayer2 = GameObject.Find("Player1B");
+                name = "Player2C";
             }
-            auxPlayer1.transform.position += new Vector3(3, 0, 0);
-            auxPlayer2.transform.position += new Vector3(3, 0, 0);
+            auxPlayer1.transform.position += new Vector3(dist, 0, 0);
+            auxPlayer2.transform.position += new Vector3(dist, 0, 0);
         }
         else
         {
@@ -346,19 +357,27 @@ public class GameController : MonoBehaviour
             {
                 auxPlayer1 = GameObject.Find("Player2B");
                 auxPlayer2 = GameObject.Find("Player2C");
+                name = "Player1A";
             }
             else if (id == 2)
             {
                 auxPlayer1 = GameObject.Find("Player2A");
                 auxPlayer2 = GameObject.Find("Player2C");
+                name = "Player1B";
             }
             else
             {
                 auxPlayer1 = GameObject.Find("Player2A");
                 auxPlayer2 = GameObject.Find("Player2B");
+                name = "Player1C";
             }
-            auxPlayer1.transform.position -= new Vector3(3, 0, 0);
-            auxPlayer2.transform.position -= new Vector3(3, 0, 0);
+            auxPlayer1.transform.position -= new Vector3(dist, 0, 0);
+            auxPlayer2.transform.position -= new Vector3(dist, 0, 0);
+        }
+        if (stage == 3)
+        {
+            enemyDefender = GameObject.Find(name);
+            enemyDefender.SetActive(false);
         }
     }
 
@@ -474,9 +493,9 @@ public class GameController : MonoBehaviour
 	public void goal(int team)
 	{
 		passSuccesful = true;
-		changeTurns();
-	}
-
+        GameObject.Find("ScoreText").GetComponent<ScoreText>().show(currentPlayer);
+    }
+    
     public void shufflePlayers(int team)
     {
         int count = 0;

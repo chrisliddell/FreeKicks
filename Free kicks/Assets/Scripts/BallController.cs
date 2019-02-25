@@ -16,16 +16,20 @@ public class BallController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {/*
         rb = GetComponent<Rigidbody>();
-        if (Input.GetKey(KeyCode.A))
-            rb.AddForce(Vector3.left * 10);
-        if (Input.GetKey(KeyCode.D))
-            rb.AddForce(Vector3.right * 10);
-        if (Input.GetKey(KeyCode.W))
-            rb.AddForce((new Vector3(0,0,1)) * 10);
-        if (Input.GetKey(KeyCode.S))
-            rb.AddForce((new Vector3(0, 0, -1)) * 10);
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+        {
+            setFreeze(false);
+            if (Input.GetKey(KeyCode.A))
+                rb.AddForce(Vector3.left * 5);
+            if (Input.GetKey(KeyCode.D))
+                rb.AddForce(Vector3.right * 5);
+            if (Input.GetKey(KeyCode.W))
+                rb.AddForce((new Vector3(0, 0, 1)) * 5);
+            if (Input.GetKey(KeyCode.S))
+                rb.AddForce((new Vector3(0, 0, -1)) * 5);
+        }*/
     }
 
     public void resetPos()
@@ -37,8 +41,6 @@ public class BallController : MonoBehaviour
     }
 
     public void goal(int team){
-		transform.position = startPos;
-        setFreeze(true);
 		GameObject.Find("Controller").GetComponent<GameController>().goal(team);
 	}
 

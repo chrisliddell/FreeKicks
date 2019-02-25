@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\GoalDetector2Controller.cs" />
     <Compile Include="Assets\Scripts\OptionController.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\ScoreText.cs" />
     <Compile Include="Assets\Scripts\TestController.cs" />
     <None Include="Assets\player\Info.txt" />
     <None Include="Assets\EasyGrassSubstance\Documentation.txt" />
