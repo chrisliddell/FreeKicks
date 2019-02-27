@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 26137824}
   - component: {fileID: 26137823}
   m_Layer: 5
-  m_Name: ButtonReset
+  m_Name: Quit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -149,7 +149,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -280, y: 290}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 100, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &26137823
 MonoBehaviour:
@@ -192,7 +192,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 603907319}
-        m_MethodName: reset
+        m_MethodName: quitMultiplayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1431,7 +1431,7 @@ GameObject:
   - component: {fileID: 466735014}
   - component: {fileID: 466735013}
   m_Layer: 5
-  m_Name: Reset
+  m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1489,9 +1489,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Reset
-
-'
+  m_Text: Quit
 --- !u!222 &466735014
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1690,6 +1688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce1ff93be41a1c64e9b5273b2a54afd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainMenu: {fileID: 0}
   playerWithBall: {fileID: 2113076358}
   enemyDefender: {fileID: 394237484}
   arrowCurved: {fileID: 2072690617}
@@ -4324,7 +4323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.004538993, g: 0.80913836, b: 0.9622642, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

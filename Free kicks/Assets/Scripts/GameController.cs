@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
@@ -10,6 +11,7 @@ public class GameController : MonoBehaviour
     GameObject test;
     GameObject goal1;
     GameObject goal2;
+    public GameObject mainMenu;
     public GameObject playerWithBall;
     public GameObject enemyDefender;
     public GameObject arrowCurved;
@@ -557,4 +559,8 @@ public class GameController : MonoBehaviour
             Debug.DrawRay(center+new Vector3(0, 0, -0.5f),dir, Color.blue, 20f);
         } while ((Physics.Raycast(center + new Vector3(0, 0, 0.5f), dir, 10f) || Physics.Raycast(center + new Vector3(0, 0, -0.5f), dir, 10f)) && count < 5);
     }
+	
+	public void quitMultiplayer(){
+		SceneManager.LoadScene("UserInterface");
+	}
 }
