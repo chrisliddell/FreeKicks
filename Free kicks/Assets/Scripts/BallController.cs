@@ -65,4 +65,9 @@ public class BallController : MonoBehaviour
         pos.z = transform.position.z;
         GameObject.Find("aim2").transform.position = pos;
     }
+
+    public void moveTo(Vector3 pos)
+    {
+        transform.position = pos;
+    }
 }

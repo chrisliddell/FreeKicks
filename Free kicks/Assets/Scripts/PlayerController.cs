@@ -42,4 +42,5 @@ public class PlayerController : MonoBehaviour
             controller.GetComponent<GameController>().shootMode(this.gameObject);
         }
     }
+
 }

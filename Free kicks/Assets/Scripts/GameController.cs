@@ -11,7 +11,6 @@ public class GameController : MonoBehaviour
     GameObject test;
     GameObject goal1;
     GameObject goal2;
-    public GameObject mainMenu;
     public GameObject playerWithBall;
     public GameObject enemyDefender;
     public GameObject arrowCurved;
