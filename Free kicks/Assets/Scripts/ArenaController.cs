@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ArenaController : MonoBehaviour
 {
+	public bool singleplayer;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +25,8 @@ public class ArenaController : MonoBehaviour
             ball.resetPos();
             ball.setFreeze(true);
             Debug.Log("Out of bounds!");
-            GameObject.Find("Controller").GetComponent<GameController>().changeTurns();
+			if(!singleplayer)
+				GameObject.Find("Controller").GetComponent<GameController>().changeTurns();
         }
     }
 }

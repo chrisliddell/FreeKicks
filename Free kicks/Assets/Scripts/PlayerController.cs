@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     public int id;
     public int team;
+	public bool singleplayer;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +21,11 @@ public class PlayerController : MonoBehaviour
 	
 	void OnTriggerEnter(Collider collider)
     {
+		if(singleplayer){
+			GameObject controller = GameObject.Find("Controller");
+            controller.GetComponent<SingleplayerController>().failedShot = true;
+			return;
+		}
         BallController ball = collider.gameObject.GetComponent<BallController>();
         if (ball != null)
         {

@@ -25,4 +25,13 @@ public class OptionController : MonoBehaviour
             tc.GetComponent<TestController>().Answer(option);
         }
     }
+	
+	public void ClickedSinglePlayer()
+    {
+        if (option != null)
+        {
+            GameObject tc = GameObject.Find("Test");
+            tc.GetComponent<TestController>().AnswerSinglePlayer(option);
+        }
+    }
 }

@@ -706,7 +706,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 236583201}
-        m_MethodName: Clicked
+        m_MethodName: ClickedSinglePlayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -849,7 +849,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 314378247}
-        m_MethodName: Clicked
+        m_MethodName: ClickedSinglePlayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1090,7 +1090,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 390407211}
-        m_MethodName: Clicked
+        m_MethodName: ClickedSinglePlayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1190,6 +1190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 2
   team: 2
+  singleplayer: 1
 --- !u!136 &454172025
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1450,6 +1451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58515851e11379c44b9b8d47e0713ab2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  singleplayer: 1
 --- !u!65 &556387178
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1620,6 +1622,12 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.179744, y: 0.17974405, z: 1.0000002}
   m_Center: {x: 0, y: -0.0000038146973, z: 0.000000059604645}
+--- !u!1 &597278095 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 3c52eeb071eb0e24a9c7fb6681aedfce,
+    type: 3}
+  m_PrefabInstance: {fileID: 1768079883}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &663130994
 GameObject:
   m_ObjectHideFlags: 0
@@ -1793,7 +1801,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 699059549}
-        m_MethodName: Clicked
+        m_MethodName: ClickedSinglePlayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2183,6 +2191,7 @@ MonoBehaviour:
   speed: 1100
   team: 1
   text: Team 1 scores!
+  singleplayer: 1
 --- !u!114 &774044039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2216,7 +2225,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Team 1 scores!
+  m_Text: You scored!
 --- !u!222 &774044040
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2517,13 +2526,14 @@ MonoBehaviour:
   striker: {fileID: 161872995}
   goalkeeper: {fileID: 1327403022}
   barrier: {fileID: 1234569771}
-  arrowCurved: {fileID: 100000, guid: fb1485ab1c8669c4295a0fd7bd19b3c9, type: 3}
-  arrowStraight: {fileID: 100000, guid: 3c52eeb071eb0e24a9c7fb6681aedfce, type: 3}
+  arrowCurved: {fileID: 1197213312}
+  arrowStraight: {fileID: 597278095}
   powerSlider: {fileID: 1015007842}
   power: 300
   maxPower: 1000
   timePressed: 0
-  currentAnswer: 0
+  currentAnswer: 4
+  failedShot: 0
 --- !u!1 &985101322
 GameObject:
   m_ObjectHideFlags: 0
@@ -3029,6 +3039,12 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.179744, y: 0.17974405, z: 1.0000001}
   m_Center: {x: 0, y: 0, z: 0.00000029802322}
+--- !u!1 &1197213312 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: fb1485ab1c8669c4295a0fd7bd19b3c9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2054985546}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1206959692
 GameObject:
   m_ObjectHideFlags: 0
@@ -3931,6 +3947,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1
   team: 2
+  singleplayer: 1
 --- !u!136 &1327403025
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4008,6 +4025,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startPos: {x: 0, y: 0, z: 0}
+  singleplayer: 1
 --- !u!135 &1395543632
 SphereCollider:
   m_ObjectHideFlags: 0

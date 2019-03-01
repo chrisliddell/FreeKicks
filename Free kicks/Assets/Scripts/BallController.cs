@@ -5,6 +5,7 @@ using UnityEngine;
 public class BallController : MonoBehaviour
 {
 	public Vector3 startPos;
+	public bool singleplayer;
     private Rigidbody rb;
     // Start is called before the first frame update
     void Start()
@@ -41,7 +42,10 @@ public class BallController : MonoBehaviour
     }
 
     public void goal(int team){
-		GameObject.Find("Controller").GetComponent<GameController>().goal(team);
+		if(!singleplayer)
+			GameObject.Find("Controller").GetComponent<GameController>().goal(team);
+		else
+			GameObject.Find("Controller").GetComponent<SingleplayerController>().scoreGoal();
 	}
 
     public void setFreeze(bool f)
@@ -64,6 +68,13 @@ public class BallController : MonoBehaviour
         pos = GameObject.Find("aim2").transform.position;
         pos.z = transform.position.z;
         GameObject.Find("aim2").transform.position = pos;
+    }
+	
+	public void updateAim()
+    {
+        Vector3 pos = GameObject.Find("aim").transform.position;
+        pos.z = transform.position.z;
+        GameObject.Find("aim").transform.position = pos;
     }
 
     public void moveTo(Vector3 pos)

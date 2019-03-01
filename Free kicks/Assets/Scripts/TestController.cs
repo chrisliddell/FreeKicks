@@ -33,4 +33,12 @@ public class TestController : MonoBehaviour
         GameController gc = controller.GetComponent<GameController>();
         gc.checkAnswer(answer);
     }
+	
+	public void AnswerSinglePlayer(int option)
+    {
+        answer = option;
+        GameObject controller = GameObject.Find("Controller");
+        SingleplayerController gc = controller.GetComponent<SingleplayerController>();
+        gc.checkAnswer(answer);
+    }
 }

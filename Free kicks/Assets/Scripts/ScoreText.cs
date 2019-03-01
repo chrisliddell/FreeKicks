@@ -10,6 +10,7 @@ public class ScoreText : MonoBehaviour
     public float speed;
     public int team;
     public string text;
+	public bool singleplayer;
     bool raising, lowering;
     // Start is called before the first frame update
     void Start()
@@ -35,8 +36,6 @@ public class ScoreText : MonoBehaviour
 
     public void show()
     {
-        text = text.Substring(0, 5) + team + text.Substring(6);
-        gameObject.GetComponent<Text>().text = text;
         StopAllCoroutines();
         StartCoroutine(Raise());
     }
@@ -82,7 +81,10 @@ public class ScoreText : MonoBehaviour
         Debug.Log("lowering");
         yield return new WaitUntil(() => Lowered());
         lowering = false;
-        GameObject.Find("Controller").GetComponent<GameController>().changeTurns();
+		if(singleplayer)
+			GameObject.Find("Controller").GetComponent<SingleplayerController>().reset();
+		else
+			GameObject.Find("Controller").GetComponent<GameController>().changeTurns();
     }
 
     bool Lowered()
