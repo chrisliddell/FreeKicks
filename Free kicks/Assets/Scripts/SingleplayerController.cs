@@ -22,6 +22,7 @@ public class SingleplayerController : MonoBehaviour
     Vector3 cameraPos;
     Quaternion cameraRot;
     float cameraFOV;
+	float screenCenter;
     public float power = 300f;
     public float maxPower = 1000f;
     public float timePressed = 0f;
@@ -37,6 +38,7 @@ public class SingleplayerController : MonoBehaviour
         GameObject camera = GameObject.Find("Main Camera");
         goal = GameObject.Find("goal2");
         ball = GameObject.Find("Ball");
+		screenCenter = Screen.width/2;
         cameraPos = camera.transform.position;
         cameraRot = camera.transform.rotation;
         cameraFOV = Camera.main.fieldOfView;
@@ -162,9 +164,22 @@ public class SingleplayerController : MonoBehaviour
                     arrow.transform.LookAt(GameObject.Find("aim").transform);
                     arrow.transform.rotation *= Quaternion.AngleAxis(180, arrow.transform.up);
 					Debug.Log(Input.mousePosition.x-GameObject.Find("aim").transform.position.x);
-                    arrow.transform.Rotate(0, -1 * Input.mousePosition.x, 0);
+                    //arrow.transform.Rotate(0, -1 * Input.mousePosition.x, 0);
                     arrow.transform.Translate(Vector3.forward * -2f);
-					
+					float cursorPos = Input.mousePosition.x;
+					Debug.Log("hitPoint: "+(hit.normal.x));
+					arrow.transform.RotateAround(ball.transform.position, new Vector3(0,-1,0), (hit.normal.x)*10);
+					//arrow.transform.Rotate(0, -1 * cursorPos, 0); 
+					/*
+					ball.GetComponent<BallController>().updateAim();
+                    arrow.gameObject.SetActive(true);
+					Vector3 strike = Vector3.Reflect(dir.normalized, Vector3.up);
+					arrow.transform.position = ball.transform.position;
+                    arrow.transform.LookAt(GameObject.Find("aim").transform);
+					arrow.transform.rotation *= Quaternion.AngleAxis(180, arrow.transform.up);
+					arrow.transform.position = Vector3.MoveTowards(ball.transform.position, strike, 1);
+					//arrow.transform.Translate(Vector3.forward * -2f);
+					*/
                  }
                 else
                 {
