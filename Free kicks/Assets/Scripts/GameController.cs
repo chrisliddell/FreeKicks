@@ -11,11 +11,9 @@ public class GameController : MonoBehaviour
     GameObject test;
     GameObject goal1;
     GameObject goal2;
+	public GameObject aimAssist;
     public GameObject playerWithBall;
     public GameObject enemyDefender;
-    public GameObject arrowCurved;
-    public GameObject arrowStraight;
-    Quaternion arrowRot;
     public Slider powerSlider;
     System.Random rand;
     private IEnumerator coroutine;
@@ -34,11 +32,15 @@ public class GameController : MonoBehaviour
     public int currentPlayer;
     public int currentAnswer;
     public float startForce = 300f;
+	LineRenderer lineRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
-        arrowRot = arrowStraight.transform.rotation;
+		lineRenderer = gameObject.GetComponent<LineRenderer>();
+		lineRenderer.SetVertexCount(2);
+		lineRenderer.GetComponent<Renderer>().enabled = true;
+		lineRenderer.enabled = false;
         passSuccesful = false;
         powerSlider.gameObject.SetActive(false);
         GameObject camera = GameObject.Find("Main Camera");
@@ -126,7 +128,7 @@ public class GameController : MonoBehaviour
     public void reset() {
         StopAllCoroutines();
         stage = -1;
-
+		aimAssist.SetActive(true);
         enemyDefender.SetActive(true);
         playerWithBall.SetActive(true);
         Camera.main.orthographic = true;
@@ -266,6 +268,7 @@ public class GameController : MonoBehaviour
         if (ans == currentAnswer)
         {
             Debug.Log("Correct");
+			aimAssist.SetActive(false);
             if (stage == 0)
             {
                 if (currentPlayer == 1) //remove goal so they can see
@@ -283,7 +286,6 @@ public class GameController : MonoBehaviour
         else
         {
             changeTurns();
-
         }
     }
 
@@ -384,13 +386,11 @@ public class GameController : MonoBehaviour
 
 
     public bool shoot(){
-        GameObject arrow = arrowStraight;
         RaycastHit hit = new RaycastHit();
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Vector3 dir = ((ball.transform.position + (ray.direction) * 1000f) - ray.origin).normalized * 7.2f;
         if (Input.GetMouseButtonDown(0)){
             Debug.Log("Clicked");
-            
             Debug.DrawRay(ray.origin, dir, Color.cyan, 200f, true);
             if (Physics.Raycast(ray.origin, dir, out hit, 200f)){
                 if (hit.collider.tag == "Ball")
@@ -405,42 +405,30 @@ public class GameController : MonoBehaviour
                     return false;
                 }
             }
-            arrow.transform.rotation = arrowRot;
-            arrow.transform.position = new Vector3(0, 0, 0);
-            arrow.gameObject.SetActive(false);
+			lineRenderer.enabled = false;
             return true;
 		}
         else
         {
             if (Physics.Raycast(ray.origin, dir, out hit, 200f))
             {
-                if (hit.collider.tag == "Ball")
+                if (hit.collider.tag == "Ball" && aimAssist.GetComponent<Toggle>().isOn)
                 {
-                    ball.GetComponent<BallController>().updateAims();
-                    arrow.gameObject.SetActive(true);
-                    arrow.transform.position = ball.transform.position;
-                    if (currentPlayer == 1)
-                    {
-                        if(stage == 1)
-                            arrow.transform.LookAt(GameObject.Find("aim2").transform);
-                        else
-                            arrow.transform.LookAt(GameObject.Find("aim1").transform);
-                    }
-                    else
-                    {
-                        if (stage == 1)
-                            arrow.transform.LookAt(GameObject.Find("aim1").transform);
-                        else
-                            arrow.transform.LookAt(GameObject.Find("aim2").transform);
-                    }
-
-                    arrow.transform.rotation *= Quaternion.AngleAxis(180, arrow.transform.up);
-                    arrow.transform.Rotate(0, -1 * Input.mousePosition.x + 180, 0);
-                    arrow.transform.Translate(Vector3.forward * -2f);
-                 }
+					lineRenderer.enabled = true;
+					Vector3 strike = Vector3.Reflect(hit.normal.normalized, Vector3.up).normalized;
+					Quaternion quat = Quaternion.AngleAxis(180, Vector3.right);
+					strike = quat * strike;
+					strike = Vector3.Reflect(strike, Vector3.right).normalized;
+					strike = Vector3.Reflect(strike, Vector3.up).normalized;
+					Vector3 endPoint = hit.point + (2f * strike); 
+					Debug.DrawRay(hit.point, strike, Color.blue, 20f, true);
+					Debug.DrawRay(hit.point, hit.normal, Color.red, 20f, true);
+					lineRenderer.SetPosition(0, hit.point);
+					lineRenderer.SetPosition(1, endPoint);
+                }
                 else
                 {
-                    arrow.gameObject.SetActive(false);
+                    lineRenderer.enabled = false;
                 }
             }
             return false;

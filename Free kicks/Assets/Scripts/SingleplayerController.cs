@@ -10,35 +10,35 @@ public class SingleplayerController : MonoBehaviour
     GameObject ball;
     GameObject test;
     GameObject goal;
+	public GameObject aimAssist;
     public GameObject striker;
     public GameObject goalkeeper;
     public GameObject barrier;
-    public GameObject arrowCurved;
-    public GameObject arrowStraight;
-    Quaternion arrowRot;
     public Slider powerSlider;
     System.Random rand;
     private IEnumerator coroutine;
     Vector3 cameraPos;
     Quaternion cameraRot;
     float cameraFOV;
-	float screenCenter;
     public float power = 300f;
     public float maxPower = 1000f;
     public float timePressed = 0f;
     public int currentAnswer;
 	public bool failedShot;
+	LineRenderer lineRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
+		lineRenderer = gameObject.GetComponent<LineRenderer>();
+		lineRenderer.SetVertexCount(2);
+		lineRenderer.GetComponent<Renderer>().enabled = true;
+		lineRenderer.enabled = false;
 		failedShot = false;
-        arrowRot = arrowStraight.transform.rotation;
         powerSlider.gameObject.SetActive(false);
         GameObject camera = GameObject.Find("Main Camera");
         goal = GameObject.Find("goal2");
         ball = GameObject.Find("Ball");
-		screenCenter = Screen.width/2;
         cameraPos = camera.transform.position;
         cameraRot = camera.transform.rotation;
         cameraFOV = Camera.main.fieldOfView;
@@ -70,6 +70,7 @@ public class SingleplayerController : MonoBehaviour
     {
 		failedShot = false;
 		striker.gameObject.SetActive(true);
+		aimAssist.SetActive(true);
         int r = rand.Next(0, 4);
         Debug.Log("Starting game");
         striker.GetComponent<StrikerController>().moveStriker();
@@ -105,13 +106,13 @@ public class SingleplayerController : MonoBehaviour
         test.SetActive(false);
         if (ans == currentAnswer)
         {
+			aimAssist.SetActive(false);
             StopAllCoroutines();
             StartCoroutine(Wait());
         }
         else
         {
             reset();
-
         }
     }
 	   
@@ -125,13 +126,11 @@ public class SingleplayerController : MonoBehaviour
 
     public bool shoot(){
 		failedShot = true;
-        GameObject arrow = arrowStraight;
         RaycastHit hit = new RaycastHit();
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Vector3 dir = ((ball.transform.position + (ray.direction) * 1000f) - ray.origin).normalized * 7.2f;
         if (Input.GetMouseButtonDown(0)){
             Debug.Log("Clicked");
-            
             Debug.DrawRay(ray.origin, dir, Color.cyan, 200f, true);
             if (Physics.Raycast(ray.origin, dir, out hit, 200f)){
                 if (hit.collider.tag == "Ball")
@@ -146,9 +145,7 @@ public class SingleplayerController : MonoBehaviour
                     return false;
                 }
             }
-            arrow.transform.rotation = arrowRot;
-            arrow.transform.position = new Vector3(0, 0, 0);
-            arrow.gameObject.SetActive(false);
+			lineRenderer.enabled = false;
             return true;
 		}
         else
@@ -156,34 +153,23 @@ public class SingleplayerController : MonoBehaviour
             if (Physics.Raycast(ray.origin, dir, out hit, 200f))
             {
 				
-                if (hit.collider.tag == "Ball")
+                if (hit.collider.tag == "Ball" && aimAssist.GetComponent<Toggle>().isOn)
                 {
-                    ball.GetComponent<BallController>().updateAim();
-                    arrow.gameObject.SetActive(true);
-                    arrow.transform.position = ball.transform.position;
-                    arrow.transform.LookAt(GameObject.Find("aim").transform);
-                    arrow.transform.rotation *= Quaternion.AngleAxis(180, arrow.transform.up);
-					Debug.Log(Input.mousePosition.x-GameObject.Find("aim").transform.position.x);
-                    //arrow.transform.Rotate(0, -1 * Input.mousePosition.x, 0);
-                    arrow.transform.Translate(Vector3.forward * -2f);
-					float cursorPos = Input.mousePosition.x;
-					Debug.Log("hitPoint: "+(hit.normal.x));
-					arrow.transform.RotateAround(ball.transform.position, new Vector3(0,-1,0), (hit.normal.x)*10);
-					//arrow.transform.Rotate(0, -1 * cursorPos, 0); 
-					/*
-					ball.GetComponent<BallController>().updateAim();
-                    arrow.gameObject.SetActive(true);
-					Vector3 strike = Vector3.Reflect(dir.normalized, Vector3.up);
-					arrow.transform.position = ball.transform.position;
-                    arrow.transform.LookAt(GameObject.Find("aim").transform);
-					arrow.transform.rotation *= Quaternion.AngleAxis(180, arrow.transform.up);
-					arrow.transform.position = Vector3.MoveTowards(ball.transform.position, strike, 1);
-					//arrow.transform.Translate(Vector3.forward * -2f);
-					*/
+					lineRenderer.enabled = true;
+					Vector3 strike = Vector3.Reflect(hit.normal.normalized, Vector3.up).normalized;
+					Quaternion quat = Quaternion.AngleAxis(180, Vector3.right);
+					strike = quat * strike;
+					strike = Vector3.Reflect(strike, Vector3.right).normalized;
+					strike = Vector3.Reflect(strike, Vector3.up).normalized;
+					Vector3 endPoint = hit.point + (2f * strike); 
+					Debug.DrawRay(hit.point, strike, Color.blue, 20f, true);
+					Debug.DrawRay(hit.point, hit.normal, Color.red, 20f, true);
+					lineRenderer.SetPosition(0, hit.point);
+					lineRenderer.SetPosition(1, endPoint);
                  }
                 else
                 {
-                    arrow.gameObject.SetActive(false);
+					lineRenderer.enabled = false;
                 }
             }
             return false;
