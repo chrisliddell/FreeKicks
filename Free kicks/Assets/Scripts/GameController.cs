@@ -12,6 +12,8 @@ public class GameController : MonoBehaviour
     GameObject goal1;
     GameObject goal2;
 	public GameObject aimAssist;
+	public GameObject scoreP1;
+    public GameObject scoreP2;
     public GameObject playerWithBall;
     public GameObject enemyDefender;
     public Slider powerSlider;
@@ -24,6 +26,7 @@ public class GameController : MonoBehaviour
     Vector3 cameraPos;
     Quaternion cameraRot;
     float cameraFOV;
+	public GameObject[] players;
     public float power = 300f;
     public float maxPower = 1000f;
     public float timePressed = 0f;
@@ -63,12 +66,13 @@ public class GameController : MonoBehaviour
 
     public void startGame()
     {
+		scoreP1.GetComponent<Text>().text = "0";
+		scoreP2.GetComponent<Text>().text = "0";
         playing = true;
         stage = -1; //-1 is not playing, 0 is defending, 1 is attacking, 2 is striking 
         getPositions();
         ball.GetComponent<BallController>().resetPos();
         float r = rand.Next(0, 2);
-        Debug.Log(r);
         reset();
         if (r < 0f)
         {
@@ -84,45 +88,21 @@ public class GameController : MonoBehaviour
 
     public void getPositions()
     {
-        Vector3 pos;
-        GameObject player;
-
-        player = GameObject.Find("Player1A");
-        pos = player.transform.position;
-        team1DefensePositions[0] = pos;
-        pos.x += 5f;
-        team1AttackPositions[0] = pos;
-
-        player = GameObject.Find("Player1B");
-        pos = player.transform.position;
-        team1DefensePositions[1] = pos;
-        pos.x += 5f;
-        team1AttackPositions[1] = pos;
-
-        player = GameObject.Find("Player1C");
-        pos = player.transform.position;
-        team1DefensePositions[2] = pos;
-        pos.x += 5f;
-        team1AttackPositions[2] = pos;
-
-        player = GameObject.Find("Player2A");
-        pos = player.transform.position;
-        team2DefensePositions[0] = pos;
-        pos.x -= 5f;
-        team2AttackPositions[0] = pos;
-
-        player = GameObject.Find("Player2B");
-        pos = player.transform.position;
-        team2DefensePositions[1] = pos;
-        pos.x -= 5f;
-        team2AttackPositions[1] = pos;
-
-        player = GameObject.Find("Player2C");
-        pos = player.transform.position;
-        team2DefensePositions[2] = pos;
-        pos.x -= 54f;
-        team2AttackPositions[2] = pos;
-
+		Vector3 pos;
+		for(int i = 0; i < players.Length; i++){
+			players[i].SetActive(true);
+			if(i<3){
+				pos = players[i].transform.position;
+				team1DefensePositions[i] = pos;
+				pos.x += 5f;
+				team1AttackPositions[i] = pos;
+			} else {
+				pos = players[i].transform.position;
+				team2DefensePositions[i-3] = pos;
+				pos.x -= 5f;
+				team2AttackPositions[i-3] = pos;
+			}
+		}
     }
 
     public void reset() {
@@ -231,7 +211,6 @@ public class GameController : MonoBehaviour
             return;
         }
         stage++;
-        Debug.Log("Stage: " + stage);
         passSuccesful = true;
         playerWithBall.gameObject.SetActive(true);
         playerWithBall = player;
@@ -421,8 +400,6 @@ public class GameController : MonoBehaviour
 					strike = Vector3.Reflect(strike, Vector3.right).normalized;
 					strike = Vector3.Reflect(strike, Vector3.up).normalized;
 					Vector3 endPoint = hit.point + (2f * strike); 
-					Debug.DrawRay(hit.point, strike, Color.blue, 20f, true);
-					Debug.DrawRay(hit.point, hit.normal, Color.red, 20f, true);
 					lineRenderer.SetPosition(0, hit.point);
 					lineRenderer.SetPosition(1, endPoint);
                 }
@@ -441,7 +418,6 @@ public class GameController : MonoBehaviour
         yield return new WaitUntil(() => releasedClick());
         timePressed = Time.time - timePressed;
         Vector3 strike = Vector3.Reflect(dir.normalized, Vector3.up);
-        Debug.Log("Time pressed: " + timePressed + " Power: " + timePressed * power);
         strike.z += (ball.transform.position.z - hitPoint.z) * 5; //5is constant of angularity
         if (timePressed * power > maxPower)
             strike *= maxPower;
@@ -467,7 +443,6 @@ public class GameController : MonoBehaviour
     {
         timePressed = Time.time;
         yield return new WaitForSeconds(5);
-		Debug.Log(passSuccesful);
         if (passSuccesful)
         {
             Debug.Log("Pass succesful");
@@ -482,7 +457,18 @@ public class GameController : MonoBehaviour
 	public void goal(int team)
 	{
 		passSuccesful = true;
-        GameObject.Find("ScoreText").GetComponent<ScoreText>().show(currentPlayer);
+		StopAllCoroutines();
+		int score;
+		if(team == 1){
+			score = int.Parse(scoreP1.GetComponent<Text>().text);
+			score+=50;
+			scoreP1.GetComponent<Text>().text = score + "";
+		} else {
+			score = int.Parse(scoreP2.GetComponent<Text>().text);
+			score+=50;
+			scoreP2.GetComponent<Text>().text = score + "";
+        }
+		GameObject.Find("ScoreText").GetComponent<ScoreText>().show(currentPlayer);
     }
     
     public void shufflePlayers(int team)
@@ -542,8 +528,6 @@ public class GameController : MonoBehaviour
                 }
             }
             count++;
-            Debug.DrawRay(center+new Vector3(0,0, 0.5f), dir, Color.red, 20f);
-            Debug.DrawRay(center+new Vector3(0, 0, -0.5f),dir, Color.blue, 20f);
         } while ((Physics.Raycast(center + new Vector3(0, 0, 0.5f), dir, 10f) || Physics.Raycast(center + new Vector3(0, 0, -0.5f), dir, 10f)) && count < 5);
     }
 	

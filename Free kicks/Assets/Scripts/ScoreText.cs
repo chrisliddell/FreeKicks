@@ -25,12 +25,10 @@ public class ScoreText : MonoBehaviour
         if (raising)
         {
             transform.position = transform.position + (new Vector3(0,1,0)* Time.deltaTime*speed);
-            Debug.Log(transform.position.y);
         }
         else if (lowering)
         {
             transform.position = transform.position - (new Vector3(0, 1, 0) * Time.deltaTime*speed);
-            Debug.Log(transform.position.y);
         }
     }
 
@@ -59,7 +57,6 @@ public class ScoreText : MonoBehaviour
     
     bool Centered()
     {
-        Debug.Log("Pos y: "+transform.position.y);
         return (transform.position.y > upperLimit);
     }
 

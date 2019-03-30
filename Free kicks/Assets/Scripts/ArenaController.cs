@@ -22,11 +22,13 @@ public class ArenaController : MonoBehaviour
         BallController ball = collider.GetComponent<BallController>();
         if (ball != null)
         {
-            ball.resetPos();
-            ball.setFreeze(true);
-            Debug.Log("Out of bounds!");
 			if(!singleplayer)
+			{
+				ball.resetPos();
+				ball.setFreeze(true);
+				Debug.Log("Out of bounds!");
 				GameObject.Find("Controller").GetComponent<GameController>().changeTurns();
+			}
         }
     }
 }

@@ -14,6 +14,7 @@ public class SingleplayerController : MonoBehaviour
     public GameObject striker;
     public GameObject goalkeeper;
     public GameObject barrier;
+	public GameObject scoreText; 
     public Slider powerSlider;
     System.Random rand;
     private IEnumerator coroutine;
@@ -55,6 +56,7 @@ public class SingleplayerController : MonoBehaviour
 
     public void startGame()
     { 
+		scoreText.GetComponent<Text>().text = "0";
         int r = rand.Next(0, 4);
         Debug.Log("Starting game");
         striker.GetComponent<StrikerController>().moveStriker();
@@ -72,7 +74,7 @@ public class SingleplayerController : MonoBehaviour
 		striker.gameObject.SetActive(true);
 		aimAssist.SetActive(true);
         int r = rand.Next(0, 4);
-        Debug.Log("Starting game");
+        Debug.Log("Resetting game");
         striker.GetComponent<StrikerController>().moveStriker();
 
         barrier.GetComponent<BarrierController>().setSize(r);
@@ -162,8 +164,6 @@ public class SingleplayerController : MonoBehaviour
 					strike = Vector3.Reflect(strike, Vector3.right).normalized;
 					strike = Vector3.Reflect(strike, Vector3.up).normalized;
 					Vector3 endPoint = hit.point + (2f * strike); 
-					Debug.DrawRay(hit.point, strike, Color.blue, 20f, true);
-					Debug.DrawRay(hit.point, hit.normal, Color.red, 20f, true);
 					lineRenderer.SetPosition(0, hit.point);
 					lineRenderer.SetPosition(1, endPoint);
                  }
@@ -182,7 +182,6 @@ public class SingleplayerController : MonoBehaviour
         yield return new WaitUntil(() => releasedClick());
         timePressed = Time.time - timePressed;
         Vector3 strike = Vector3.Reflect(dir.normalized, Vector3.up);
-        Debug.Log("Time pressed: " + timePressed + " Power: " + timePressed * power);
         strike.z += (ball.transform.position.z - hitPoint.z) * 5; //5is constant of angularity
         if (timePressed * power > maxPower)
             strike *= maxPower;
@@ -221,6 +220,14 @@ public class SingleplayerController : MonoBehaviour
 	
 	public void scoreGoal()
 	{
+		StopAllCoroutines();
+		int score = int.Parse(scoreText.GetComponent<Text>().text);
+		score+=50;
+		scoreText.GetComponent<Text>().text = score + "";
         GameObject.Find("ScoreText").GetComponent<ScoreText>().show();
     }
+	
+	public void quitSingleplayer(){
+		SceneManager.LoadScene("UserInterface");
+	}
 }
