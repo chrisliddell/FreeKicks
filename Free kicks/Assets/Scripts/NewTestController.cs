@@ -20,9 +20,15 @@ public class NewTestController : MonoBehaviour
     {
         test = "";
 		quest = "";
-		index = PlayerPrefs.GetInt("index", 0);
-		index++;
-    }
+		index = PlayerPrefs.GetInt("index", 0)+1;
+		Debug.Log("Adding test, current index: "+index);
+	}
+	
+	public void reset(){
+		PlayerPrefs.DeleteAll();
+		Debug.Log("Cleared all player preferences");
+		PlayerPrefs.SetInt("index", 0);
+	}
 
     // Update is called once per frame
     void Update()
@@ -113,6 +119,10 @@ public class NewTestController : MonoBehaviour
 		clearTextFields();
 		Debug.Log(test);
 		PlayerPrefs.SetString(index+"", test);
+		index++;
+		Debug.Log("Setting new index: "+index);
+		PlayerPrefs.SetInt("index", index);
 		test = "";
+		Cancel();
 	}
 }
