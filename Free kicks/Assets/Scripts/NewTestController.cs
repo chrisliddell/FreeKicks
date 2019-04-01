@@ -20,7 +20,8 @@ public class NewTestController : MonoBehaviour
     {
         test = "";
 		quest = "";
-		index = PlayerPrefs.GetInt("index", 0)+1;
+		index = PlayerPrefs.GetInt("index", 0);
+		if(index == 0) index++;
 		Debug.Log("Adding test, current index: "+index);
 	}
 	
@@ -117,7 +118,7 @@ public class NewTestController : MonoBehaviour
 	public void save(){
 		test = "{"+ testName.GetComponent<Text>().text +":"+test+"\n}";
 		clearTextFields();
-		Debug.Log(test);
+		Debug.Log("Saving new test:\n"+test);
 		PlayerPrefs.SetString(index+"", test);
 		index++;
 		Debug.Log("Setting new index: "+index);

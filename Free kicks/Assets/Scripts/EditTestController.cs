@@ -25,7 +25,6 @@ public class EditTestController : MonoBehaviour
     {
         test = "";
 		quest = "";
-		updateTests();
     }
 
     // Update is called once per frame
@@ -51,14 +50,8 @@ public class EditTestController : MonoBehaviour
 		Debug.Log("Editting tests, current index: "+index);
 		tests = new string[index];
 		for(int i = 1; i < index; i++){
-			Debug.Log(i+": "+PlayerPrefs.GetString(i+"", ""));
-			if(PlayerPrefs.GetString(i+"", "").Split(':')[0] != ""){
+			if(PlayerPrefs.GetString(i+"", "").Split(':')[0] != "")
 				list.Add(PlayerPrefs.GetString(i+"", "").Split(':')[0].Substring(1)+"\n");
-				/*//Button button = new Button()
-				testsPanels.GetComponentInChildren<Text>().text = PlayerPrefs.GetString(i+"", "").Split(':')[0].Substring(1)+"\n";
-				//.onClick.AddListener(() => { MyFunction(); MyOtherFunction(); });
-				//testsPanels.GetComponent<Text>().text += PlayerPrefs.GetString(i+"", "").Split(':')[0].Substring(1)+"\n";*/
-			}
 		}
 		testsPanels.GetComponent<TestScrollView>().addContent(list);
 	}
@@ -82,8 +75,6 @@ public class EditTestController : MonoBehaviour
 	
 	public void show(){
 		mainMenu.SetActive(false);
-		testsPanels.GetComponent<TestScrollView>().init();
-		questionsPanels.GetComponent<TestScrollView>().init();
 		updateTests();
 	}
 	
@@ -149,5 +140,21 @@ public class EditTestController : MonoBehaviour
 		Debug.Log(test);
 		PlayerPrefs.SetString(index+"", test);
 		test = "";
+	}
+	
+	public void fillQuestion(int id){
+		if(id == 0) return;
+		
+	}
+	
+	public void fillTest(int id){
+		if(id == 0) return;
+		List<string> list = new List<string>();
+		string[] questions = PlayerPrefs.GetString(id+"", "").Replace("\n", "").Replace("\t", "").Split('{');
+		testName.GetComponent<Text>().text = questions[1].Split(':')[0];
+		for(int i = 2; i < questions.Length; i++)
+			list.Add(questions[i].Split(':')[0]);
+		questionsPanels.GetComponent<TestScrollView>().clear();
+		questionsPanels.GetComponent<TestScrollView>().addContent(list);
 	}
 }

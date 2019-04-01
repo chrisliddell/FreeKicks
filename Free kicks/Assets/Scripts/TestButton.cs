@@ -5,6 +5,8 @@ using System.Collections;
 public class TestButton : MonoBehaviour {
 
 	private string Name;
+	public int index;
+	public bool Type;
 	public Text ButtonText;
 	public TestScrollView ScrollView;
 
@@ -13,13 +15,15 @@ public class TestButton : MonoBehaviour {
 		Name = name;
 		ButtonText.text = name;
 	}
-	public void Button_Click()
+	
+	public void SetIndex(int i)
 	{
-		ScrollView.ButtonClicked(Name);
-
+		index = i;
 	}
 	
-	public void test(){
-		Debug.Log("hola");
+	public void Button_Click()
+	{
+		ScrollView.ButtonClicked(index, Name, Type);
+
 	}
 }

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 public class TestScrollView : MonoBehaviour {
 
 	public GameObject Button_Template;
+	public GameObject Controller;
 	private List<string> NameList = new List<string>();
-	private GameObject button;
 
 	// Use this for initialization
 	void Start () {
@@ -33,46 +33,34 @@ public class TestScrollView : MonoBehaviour {
 
 		}*/
 	}
-	
-	public void init(){
-		button = Instantiate(Button_Template) as GameObject;
-		clear();
-	}
-	
+
 	public void addContent(List<string> list){
+		int i = 1;
 		foreach(string str in list)
 		{
-			GameObject go = Instantiate(button) as GameObject;
+			GameObject go = Instantiate(Button_Template) as GameObject;
 			go.SetActive(true);
 			TestButton TB = go.GetComponent<TestButton>();
 			TB.SetName(str);
-			go.transform.SetParent(GameObject.Find("ContentTests").transform);
+			TB.SetIndex(i);
+			go.transform.SetParent(Button_Template.transform.parent);
+			i++;
 		}
 	}
 	
-	public void addContent(List<string> list, bool test){
-		foreach(string str in list)
-		{
-			GameObject go = Instantiate(button) as GameObject;
-			go.SetActive(true);
-			TestButton TB = go.GetComponent<TestButton>();
-			TB.SetName(str);
-			if(test)
-				go.transform.SetParent(GameObject.Find("ContentTests").transform);
-			else
-				go.transform.SetParent(GameObject.Find("ContentQuestions").transform);
-		}
-	}	
 	
 	public void clear(){
 		var children = new List<GameObject>();
-		foreach (Transform child in transform) children.Add(child.gameObject);
+		foreach (Transform child in gameObject.transform.GetChild(0)) children.Add(child.gameObject);
+		children.RemoveAt(0);
 		children.ForEach(child => Destroy(child));
 	}
 	
-	public void ButtonClicked(string str)
-	{
-		Debug.Log(str + " button clicked.");
-
+	public void ButtonClicked(int index, string name, bool type){ //type 0 = test, 1 = question
+		Debug.Log("Name: "+name + " button clicked. "+type + " index: "+index);
+		if(type)
+			Controller.GetComponent<EditTestController>().fillQuestion(index);
+		else
+			Controller.GetComponent<EditTestController>().fillTest(index);
 	}
 }

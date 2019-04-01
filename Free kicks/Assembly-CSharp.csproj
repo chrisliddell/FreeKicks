@@ -75,7 +75,9 @@
     <Compile Include="Assets\Scripts\ScoreText.cs" />
     <Compile Include="Assets\Scripts\SingleplayerController.cs" />
     <Compile Include="Assets\Scripts\StrikerController.cs" />
+    <Compile Include="Assets\Scripts\TestButton.cs" />
     <Compile Include="Assets\Scripts\TestController.cs" />
+    <Compile Include="Assets\Scripts\TestScrollView.cs" />
     <None Include="Assets\player\Info.txt" />
     <None Include="Assets\EasyGrassSubstance\Documentation.txt" />
     <Reference Include="Unity.TextMeshPro.Editor">
