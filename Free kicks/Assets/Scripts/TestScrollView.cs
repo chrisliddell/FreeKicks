@@ -59,8 +59,8 @@ public class TestScrollView : MonoBehaviour {
 	public void ButtonClicked(int index, string name, bool type){ //type 0 = test, 1 = question
 		Debug.Log("Name: "+name + " button clicked. "+type + " index: "+index);
 		if(type)
-			Controller.GetComponent<EditTestController>().fillQuestion(index);
+			Controller.GetComponent<EditTestController>().fillQuestion(index, name);
 		else
-			Controller.GetComponent<EditTestController>().fillTest(index);
+			Controller.GetComponent<EditTestController>().fillTest(index, name);
 	}
 }

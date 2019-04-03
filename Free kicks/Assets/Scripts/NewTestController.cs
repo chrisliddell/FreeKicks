@@ -9,15 +9,18 @@ public class NewTestController : MonoBehaviour
 	public string test, quest;
 	public int index;
 	public GameObject[] options;
+	public GameObject[] toggles;
 	public GameObject testName;
 	public GameObject question;
 	public GameObject buttonAdd;
 	public GameObject buttonFinish;
 	public GameObject questionsPanels;
+	public string answer;
 	GameObject input;
     // Start is called before the first frame update
     void Start()
     {
+		answer = "A";
         test = "";
 		quest = "";
 		index = PlayerPrefs.GetInt("index", 0);
@@ -81,8 +84,8 @@ public class NewTestController : MonoBehaviour
 	
 	public void addQuestion(){
 		quest = question.GetComponent<Text>().text + ": [" + options[0].GetComponent<Text>().text + ", " + options[1].GetComponent<Text>().text + ", " + options[2].GetComponent<Text>().text + ", " + options[3].GetComponent<Text>().text+"]";
-		questionsPanels.GetComponent<Text>().text += quest + "\n";
-		test += "\n\t{\n\t\t" + quest + "\n\t}";
+		questionsPanels.GetComponent<Text>().text += quest +" Ans: "+answer+ "\n";
+		test += "\n\t{\n\t\t" + quest + "\n\t\tans:\t"+answer+"\n\t}";
 		clearQuestion();
 	}
 	
@@ -125,5 +128,30 @@ public class NewTestController : MonoBehaviour
 		PlayerPrefs.SetInt("index", index);
 		test = "";
 		Cancel();
+	}
+	
+	public void changeAnswer(string a){
+		answer = a;
+		if(a == "A"){
+			toggles[0].GetComponent<Toggle>().isOn = true;
+			toggles[1].GetComponent<Toggle>().isOn = false;
+			toggles[2].GetComponent<Toggle>().isOn = false;
+			toggles[3].GetComponent<Toggle>().isOn = false;
+		} else if(a == "B"){
+			toggles[0].GetComponent<Toggle>().isOn = false;
+			toggles[1].GetComponent<Toggle>().isOn = true;
+			toggles[2].GetComponent<Toggle>().isOn = false;
+			toggles[3].GetComponent<Toggle>().isOn = false;
+		} else if(a == "C"){
+			toggles[0].GetComponent<Toggle>().isOn = false;
+			toggles[1].GetComponent<Toggle>().isOn = false;
+			toggles[2].GetComponent<Toggle>().isOn = true;
+			toggles[3].GetComponent<Toggle>().isOn = false;
+		} else {
+			toggles[0].GetComponent<Toggle>().isOn = false;
+			toggles[1].GetComponent<Toggle>().isOn = false;
+			toggles[2].GetComponent<Toggle>().isOn = false;
+			toggles[3].GetComponent<Toggle>().isOn = true;
+		}
 	}
 }

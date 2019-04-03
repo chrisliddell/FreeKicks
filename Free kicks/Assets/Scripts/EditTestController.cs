@@ -9,6 +9,7 @@ public class EditTestController : MonoBehaviour
 	public string test, quest;
 	public int index;
 	public GameObject[] options;
+	public GameObject[] toggles;
 	public GameObject testName;
 	public GameObject question;
 	public GameObject buttonAdd;
@@ -17,6 +18,8 @@ public class EditTestController : MonoBehaviour
 	public GameObject buttonRemove;
 	public GameObject testsPanels;
 	public GameObject questionsPanels;
+	public int edittingTest;
+	public string answer;
 	GameObject input;
 	string[] tests;
 	
@@ -25,6 +28,8 @@ public class EditTestController : MonoBehaviour
     {
         test = "";
 		quest = "";
+		answer = "A";
+		edittingTest = 0;
     }
 
     // Update is called once per frame
@@ -142,19 +147,50 @@ public class EditTestController : MonoBehaviour
 		test = "";
 	}
 	
-	public void fillQuestion(int id){
+	public void fillQuestion(int id, string q){
 		if(id == 0) return;
-		
+		question.transform.parent.gameObject.GetComponent<InputField>().text = q;
+		changeAnswer(PlayerPrefs.GetString(edittingTest+"", "").Replace("\n", "").Replace("\t", "").Split('{')[id+1].Split('[')[1].Split(']')[1].Split(':')[1].Substring(0,1));
+		string[] opts =  PlayerPrefs.GetString(edittingTest+"", "").Replace("\n", "").Replace("\t", "").Split('{')[id+1].Split('[')[1].Split(']')[0].Split(',');
+		for(int i = 0; i < opts.Length; i++)
+			options[i].transform.parent.gameObject.GetComponent<InputField>().text = opts[i];
 	}
 	
-	public void fillTest(int id){
+	public void fillTest(int id, string t){
 		if(id == 0) return;
+		edittingTest = id;
+		clearQuestion();
+		testName.transform.parent.gameObject.GetComponent<InputField>().text = t;
 		List<string> list = new List<string>();
 		string[] questions = PlayerPrefs.GetString(id+"", "").Replace("\n", "").Replace("\t", "").Split('{');
-		testName.GetComponent<Text>().text = questions[1].Split(':')[0];
 		for(int i = 2; i < questions.Length; i++)
 			list.Add(questions[i].Split(':')[0]);
 		questionsPanels.GetComponent<TestScrollView>().clear();
 		questionsPanels.GetComponent<TestScrollView>().addContent(list);
+	}
+	
+	public void changeAnswer(string a){
+		answer = a;
+		if(a == "A"){
+			toggles[0].GetComponent<Toggle>().isOn = true;
+			toggles[1].GetComponent<Toggle>().isOn = false;
+			toggles[2].GetComponent<Toggle>().isOn = false;
+			toggles[3].GetComponent<Toggle>().isOn = false;
+		} else if(a == "B"){
+			toggles[0].GetComponent<Toggle>().isOn = false;
+			toggles[1].GetComponent<Toggle>().isOn = true;
+			toggles[2].GetComponent<Toggle>().isOn = false;
+			toggles[3].GetComponent<Toggle>().isOn = false;
+		} else if(a == "C"){
+			toggles[0].GetComponent<Toggle>().isOn = false;
+			toggles[1].GetComponent<Toggle>().isOn = false;
+			toggles[2].GetComponent<Toggle>().isOn = true;
+			toggles[3].GetComponent<Toggle>().isOn = false;
+		} else {
+			toggles[0].GetComponent<Toggle>().isOn = false;
+			toggles[1].GetComponent<Toggle>().isOn = false;
+			toggles[2].GetComponent<Toggle>().isOn = false;
+			toggles[3].GetComponent<Toggle>().isOn = true;
+		}
 	}
 }
