@@ -6,6 +6,7 @@ public class TestScrollView : MonoBehaviour {
 
 	public GameObject Button_Template;
 	public GameObject Controller;
+	int index;
 	private List<string> NameList = new List<string>();
 
 	// Use this for initialization
@@ -35,17 +36,27 @@ public class TestScrollView : MonoBehaviour {
 	}
 
 	public void addContent(List<string> list){
-		int i = 1;
+		index = 1;
 		foreach(string str in list)
 		{
 			GameObject go = Instantiate(Button_Template) as GameObject;
 			go.SetActive(true);
 			TestButton TB = go.GetComponent<TestButton>();
 			TB.SetName(str);
-			TB.SetIndex(i);
+			TB.SetIndex(index);
 			go.transform.SetParent(Button_Template.transform.parent);
-			i++;
+			index++;
 		}
+	}
+	
+	public void addContent(string s){
+		GameObject go = Instantiate(Button_Template) as GameObject;
+		go.SetActive(true);
+		TestButton TB = go.GetComponent<TestButton>();
+		TB.SetName(s);
+		TB.SetIndex(index);
+		go.transform.SetParent(Button_Template.transform.parent);
+		index++;
 	}
 	
 	
