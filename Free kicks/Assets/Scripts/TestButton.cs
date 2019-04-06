@@ -6,6 +6,7 @@ public class TestButton : MonoBehaviour {
 
 	private string Name;
 	public int index;
+	public int qNum;
 	public bool Type;
 	public Text ButtonText;
 	public TestScrollView ScrollView;
@@ -21,9 +22,15 @@ public class TestButton : MonoBehaviour {
 		index = i;
 	}
 	
+	public void SetQNum(int i)
+	{
+		qNum = i;
+	}
+	
+	
 	public void Button_Click()
 	{
-		ScrollView.ButtonClicked(index, Name, Type);
+		ScrollView.ButtonClicked(index, Name, Type, qNum);
 
 	}
 }
