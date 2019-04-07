@@ -19,8 +19,13 @@ public class EditTestController : MonoBehaviour
 	public GameObject buttonRemove;
 	public GameObject testsPanels;
 	public GameObject questionsPanels;
-	public int edittingTest;
-	public int edittingQuestion;
+	public GameObject blurPanel;
+	public GameObject changeNamePanel;
+	public GameObject newName;
+	public GameObject buttonCancelChangeName;
+	public GameObject buttonChangeName;
+	public int editingTest;
+	public int editingQuestion;
 	public string answer;
 	GameObject input;
 	string[] tests;
@@ -31,8 +36,10 @@ public class EditTestController : MonoBehaviour
         test = "";
 		quest = "";
 		answer = "A";
-		edittingTest = 0;
-		edittingQuestion = 0;
+		editingTest = 0;
+		editingQuestion = 0;
+		blurPanel.SetActive(false);
+		changeNamePanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -55,7 +62,7 @@ public class EditTestController : MonoBehaviour
 		testsPanels.GetComponent<TestScrollView>().clear();
 		questionsPanels.GetComponent<TestScrollView>().clear();
 		index = PlayerPrefs.GetInt("index", 0);
-		Debug.Log("Editting tests, current index: "+index);
+		Debug.Log("editing tests, current index: "+index);
 		tests = new string[index];
 		for(int i = 1; i < index; i++){
 			if(PlayerPrefs.GetString(i+"", "").Split(':')[0] != "")
@@ -88,8 +95,8 @@ public class EditTestController : MonoBehaviour
 	
 	
 	public void hide(){
-		edittingQuestion = 0;
-		edittingTest = 0;
+		editingQuestion = 0;
+		editingTest = 0;
 		gameObject.SetActive(false);
 		mainMenu.SetActive(true);
 	}
@@ -131,30 +138,30 @@ public class EditTestController : MonoBehaviour
 	
 	public void saveQuestion(){
 		clearQuestion();
-		Debug.Log("New Test: "+edittingTest+"\n" + test);
-		PlayerPrefs.SetString(edittingTest+"", test);
+		Debug.Log("New Test: "+editingTest+"\n" + test);
+		PlayerPrefs.SetString(editingTest+"", test);
 		test = "";
-		edittingQuestion = 0;
-		edittingTest = 0;
+		editingQuestion = 0;
+		editingTest = 0;
 	}
 	
 	public void saveTest(){
 		test = "{"+ testName.GetComponent<Text>().text +":"+test+"\n}";
 		clearTextFields();
 		Debug.Log(test);
-		PlayerPrefs.SetString(edittingTest+"", test);
+		PlayerPrefs.SetString(editingTest+"", test);
 		test = "";
-		edittingQuestion = 0;
-		edittingTest = 0;
+		editingQuestion = 0;
+		editingTest = 0;
 	}
 	
 	public void fillQuestion(int id, int qNum, string q){
 		if(id == 0) return;
-		edittingTest = id;
-		edittingQuestion = qNum;
+		editingTest = id;
+		editingQuestion = qNum;
 		question.transform.parent.gameObject.GetComponent<InputField>().text = q;
-		changeAnswer(PlayerPrefs.GetString(edittingTest+"", "").Replace("\n", "").Replace("\t", "").Split('{')[qNum+1].Split(']')[1].Split(':')[1].Substring(0,1));
-		string[] opts =  PlayerPrefs.GetString(edittingTest+"", "").Replace("\n", "").Replace("\t", "").Split('{')[id+1].Split('[')[1].Split(']')[0].Split(',');
+		changeAnswer(PlayerPrefs.GetString(editingTest+"", "").Replace("\n", "").Replace("\t", "").Split('{')[qNum+1].Split(']')[1].Split(':')[1].Substring(0,1));
+		string[] opts =  PlayerPrefs.GetString(editingTest+"", "").Replace("\n", "").Replace("\t", "").Split('{')[qNum+1].Split('[')[1].Split(']')[0].Split(',');
 		for(int i = 0; i < opts.Length; i++)
 			options[i].transform.parent.gameObject.GetComponent<InputField>().text = opts[i];
 	}
@@ -162,7 +169,7 @@ public class EditTestController : MonoBehaviour
 	public void fillTest(int id, string t){
 		if(id == 0) return;
 		test =  PlayerPrefs.GetString(id+"", "");
-		edittingTest = id;
+		editingTest = id;
 		clearQuestion();
 		testName.transform.parent.gameObject.GetComponent<InputField>().text = t;
 		List<string> list = new List<string>();
@@ -199,11 +206,12 @@ public class EditTestController : MonoBehaviour
 	}
 	
 	public void editQuestion(){
+		if(editingQuestion == 0) return;
 		string tName = testName.transform.parent.gameObject.GetComponent<InputField>().text;
-		Debug.Log("Editting question #"+edittingQuestion);
+		Debug.Log("editing question #"+editingQuestion);
 		quest = question.GetComponent<Text>().text + ": [" + options[0].GetComponent<Text>().text + ", " + options[1].GetComponent<Text>().text + ", " + options[2].GetComponent<Text>().text + ", " + options[3].GetComponent<Text>().text+"]";
 		string[] quests = test.Split('{');
-		quests[edittingQuestion+1] = "\n\t\t"+quest+"\n\t\tans:\t"+answer+"\n\t}\n\t";
+		quests[editingQuestion+1] = "\n\t\t"+quest+"\n\t\tans:\t"+answer+"\n\t}\n\t";
 		test = "{" + tName+":\n\t";
 		for(int i = 2; i < quests.Length; i++){
 			test += "{"+quests[i];
@@ -213,33 +221,67 @@ public class EditTestController : MonoBehaviour
 	}
 	
 	public void removeQuestion(){
-		Debug.Log("Removing question #"+edittingQuestion);
-		test = "";
-		PlayerPrefs.SetString(index+"", test);
-		questionsPanels.GetComponent<Text>().text = test;
-		clearTextFields();
-		hide();
+		if(editingQuestion == 0) return;
+		Debug.Log("Removing question #"+editingQuestion);
+		string tName = testName.transform.parent.gameObject.GetComponent<InputField>().text;
+		string[] questions = test.Split('{');
+		test = "{" + tName+":\n\t";
+		for(int i = 2; i < questions.Length; i++){
+			if((i-1) != editingQuestion)
+				test += "{"+questions[i];
+		}
+		saveQuestion();
+		updateTests();
 	}
 	
 	public void deleteTest(){
-		Debug.Log("Deleting test #"+edittingTest);/*
-		test = "";
-		PlayerPrefs.SetString(index+"", test);
-		questionsPanels.GetComponent<Text>().text = test;
-		clearTextFields();
-		hide();*/
+		if(editingTest == 0) return;
+		Debug.Log("Deleting test #"+editingTest);
+		List<string> list = new List<string>();
+		index = PlayerPrefs.GetInt("index", 0);
+		for(int i = 1; i < index; i++){
+			if(i != editingTest)
+				list.Add(PlayerPrefs.GetString(i+"", ""));
+		}
+		PlayerPrefs.DeleteAll();
+		index = 1;
+		foreach(string s in list){
+			PlayerPrefs.SetString(index+"", s);
+			index++;
+		}
+		PlayerPrefs.SetInt("index", index);
+		updateTests();
 	}
 	
 	public void addQuestion(){
-		edittingQuestion = questionsPanels.transform.GetChild(0).childCount;
-		Debug.Log("Adding question #"+edittingQuestion);
-		questionsPanels.GetComponent<TestScrollView>().addContent(question.GetComponent<Text>().text, edittingTest, edittingQuestion);
+		editingQuestion = questionsPanels.transform.GetChild(0).childCount;
+		Debug.Log("Adding question #"+editingQuestion);
+		questionsPanels.GetComponent<TestScrollView>().addContent(question.GetComponent<Text>().text, editingTest, editingQuestion);
 		quest = question.GetComponent<Text>().text + ": [" + options[0].GetComponent<Text>().text + ", " + options[1].GetComponent<Text>().text + ", " + options[2].GetComponent<Text>().text + ", " + options[3].GetComponent<Text>().text+"]";
 		test = test.Substring(0, test.Length-1)+ "\t{\n\t\t" + quest + "\n\t\tans:\t"+answer+"\n\t}\n}";
 		saveQuestion();
 	}
 	
 	public void changeName(){
-		Debug.Log("Rename test #"+edittingTest);
+		string n =  testName.GetComponent<Text>().text;
+		if(n == "") return;
+		Debug.Log("Renaming test #"+editingTest);
+		blurPanel.SetActive(true);
+		changeNamePanel.SetActive(true);
+		newName.transform.parent.gameObject.GetComponent<InputField>().text = n;
+	}
+	
+	public void cancelChangeName(){
+		blurPanel.SetActive(false);
+		changeNamePanel.SetActive(false);
+	}
+	
+	public void saveName(){
+		testName.transform.parent.gameObject.GetComponent<InputField>().text = newName.GetComponent<Text>().text;
+		int i = test.Split(':')[0].Length;
+		test = "{" + newName.GetComponent<Text>().text + test.Substring(i);
+		PlayerPrefs.SetString(editingTest+"", test);
+		cancelChangeName();
+		updateTests();
 	}
 }
