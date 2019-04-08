@@ -24,10 +24,12 @@ public class ArenaController : MonoBehaviour
         {
 			if(!singleplayer)
 			{
-				ball.resetPos();
-				ball.setFreeze(true);
-				Debug.Log("Out of bounds!");
-				GameObject.Find("Controller").GetComponent<GameController>().changeTurns();
+				if(!GameObject.Find("Controller").GetComponent<GameController>().scoring){
+					ball.resetPos();
+					ball.setFreeze(true);
+					Debug.Log("Out of bounds!");
+					GameObject.Find("Controller").GetComponent<GameController>().changeTurns();
+				}
 			}
         }
     }

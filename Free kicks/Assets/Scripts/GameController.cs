@@ -35,6 +35,7 @@ public class GameController : MonoBehaviour
     public int currentPlayer;
     public int currentAnswer;
     public float startForce = 300f;
+	public bool scoring;
 	LineRenderer lineRenderer;
 
     // Start is called before the first frame update
@@ -45,6 +46,7 @@ public class GameController : MonoBehaviour
 		lineRenderer.GetComponent<Renderer>().enabled = true;
 		lineRenderer.enabled = false;
         passSuccesful = false;
+		scoring = false;
         powerSlider.gameObject.SetActive(false);
         GameObject camera = GameObject.Find("Main Camera");
         goal1 = GameObject.Find("goal1");
@@ -108,6 +110,7 @@ public class GameController : MonoBehaviour
     public void reset() {
         StopAllCoroutines();
         stage = -1;
+		scoring = false;
 		aimAssist.SetActive(true);
         enemyDefender.SetActive(true);
         playerWithBall.SetActive(true);
@@ -272,7 +275,7 @@ public class GameController : MonoBehaviour
     {
         enemyDefender.SetActive(true);
         playerWithBall.gameObject.SetActive(true);
-        Debug.Log("Incorrect");
+		scoring = false;
         reset();
         StartCoroutine(startDelay());
     }
@@ -456,6 +459,7 @@ public class GameController : MonoBehaviour
 	
 	public void goal(int team)
 	{
+		scoring = true;
 		passSuccesful = true;
 		StopAllCoroutines();
 		int score;
