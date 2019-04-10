@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\GoalDetector1Controller.cs" />
     <Compile Include="Assets\Scripts\GoalDetector2Controller.cs" />
     <Compile Include="Assets\Scripts\MenuButton.cs" />
+    <Compile Include="Assets\Scripts\MenuController.cs" />
     <Compile Include="Assets\Scripts\NewTestController.cs" />
     <Compile Include="Assets\Scripts\OptionController.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />

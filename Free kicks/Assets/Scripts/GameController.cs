@@ -58,6 +58,7 @@ public class GameController : MonoBehaviour
         rand = new System.Random();
         test = GameObject.Find("Test");
         test.SetActive(false);
+		getPositions();
     }
 
     // Update is called once per frame
@@ -72,7 +73,6 @@ public class GameController : MonoBehaviour
 		scoreP2.GetComponent<Text>().text = "0";
         playing = true;
         stage = -1; //-1 is not playing, 0 is defending, 1 is attacking, 2 is striking 
-        getPositions();
         ball.GetComponent<BallController>().resetPos();
         float r = rand.Next(0, 2);
         reset();
@@ -533,7 +533,7 @@ public class GameController : MonoBehaviour
             }
             count++;
         } while ((Physics.Raycast(center + new Vector3(0, 0, 0.5f), dir, 10f) || Physics.Raycast(center + new Vector3(0, 0, -0.5f), dir, 10f)) && count < 5);
-    }
+	}
 	
 	public void quitMultiplayer(){
 		SceneManager.LoadScene("UserInterface");

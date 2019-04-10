@@ -73,13 +73,31 @@ public class SingleplayerController : MonoBehaviour
 		failedShot = false;
 		striker.gameObject.SetActive(true);
 		aimAssist.SetActive(true);
-        int r = rand.Next(0, 4);
         Debug.Log("Resetting game");
         striker.GetComponent<StrikerController>().moveStriker();
-
-        barrier.GetComponent<BarrierController>().setSize(r);
+		switch(rand.Next(0, 10)){
+			case 0:
+			case 1: 
+				barrier.GetComponent<BarrierController>().setSize(0);
+				break;
+			case 2:
+			case 3: 
+				barrier.GetComponent<BarrierController>().setSize(1);
+				break;
+			case 4:
+			case 5:
+			case 6:
+				barrier.GetComponent<BarrierController>().setSize(2);
+				break;
+			case 7:
+			case 8:
+				barrier.GetComponent<BarrierController>().setSize(3);
+				break;
+			default:
+				barrier.GetComponent<BarrierController>().setSize(4);
+				break;
+		}
         barrier.GetComponent<BarrierController>().moveBarrier();
-
         ball.GetComponent<BallController>().resetPos();
         striker.GetComponent<StrikerController>().getBall(ball);
     }
