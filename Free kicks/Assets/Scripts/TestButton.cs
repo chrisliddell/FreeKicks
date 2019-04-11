@@ -4,12 +4,13 @@ using System.Collections;
 
 public class TestButton : MonoBehaviour {
 
-	private string Name;
+	public string Name;
 	public int index;
 	public int qNum;
 	public bool Type;
 	public Text ButtonText;
 	public TestScrollView ScrollView;
+	public Text pickTestText;
 
 	public void SetName(string name)
 	{
@@ -32,5 +33,11 @@ public class TestButton : MonoBehaviour {
 	{
 		ScrollView.ButtonClicked(index, Name, Type, qNum);
 
+	}
+	
+	public void Test_Pick()
+	{
+		ScrollView.TestPicked(index, Name);
+		pickTestText.text = "Play: "+Name;
 	}
 }

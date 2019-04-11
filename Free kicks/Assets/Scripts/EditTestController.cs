@@ -112,8 +112,9 @@ public class EditTestController : MonoBehaviour
 	}
 	
 	public void show(){
-		madeChanges = false;
+		gameObject.SetActive(true);
 		mainMenu.SetActive(false);
+		madeChanges = false;
 		prevIndex = PlayerPrefs.GetInt("index", 0);
 		prevTests = new string[prevIndex];
 		for(int i = 1; i < prevIndex; i++){

@@ -70,4 +70,10 @@ public class TestScrollView : MonoBehaviour {
 		else
 			Controller.GetComponent<EditTestController>().fillTest(id, name);
 	}
+	
+	public void TestPicked(int id, string name){ 
+		Debug.Log("Name: "+name + " button clicked. index: "+id );
+		Controller.GetComponent<MenuController>().test = name;
+		Controller.GetComponent<MenuController>().index = id;
+	}
 }

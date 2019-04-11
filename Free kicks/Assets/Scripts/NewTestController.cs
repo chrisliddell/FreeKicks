@@ -66,6 +66,7 @@ public class NewTestController : MonoBehaviour
 	}
 	
 	public void show(){
+		gameObject.SetActive(true);
 		mainMenu.SetActive(false);
 	}
 	
