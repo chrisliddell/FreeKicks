@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class OptionController : MonoBehaviour
 {
-    public int option;
+	public GameObject testPanel;
+    public string option;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +23,7 @@ public class OptionController : MonoBehaviour
         if (option != null)
         {
             GameObject tc = GameObject.Find("Test");
-            tc.GetComponent<TestController>().Answer(option);
+            testPanel.GetComponent<TestController>().Answer(option);
         }
     }
 	
@@ -31,7 +32,7 @@ public class OptionController : MonoBehaviour
         if (option != null)
         {
             GameObject tc = GameObject.Find("Test");
-            tc.GetComponent<TestController>().AnswerSinglePlayer(option);
+            testPanel.GetComponent<TestController>().AnswerSingleplayer(option);
         }
     }
 }

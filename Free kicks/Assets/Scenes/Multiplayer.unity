@@ -389,7 +389,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b51cf140f131be743a11dcb9250243d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  option: 3
+  testPanel: {fileID: 1553065829}
+  option: C
 --- !u!1 &80678687
 GameObject:
   m_ObjectHideFlags: 0
@@ -1764,7 +1765,6 @@ MonoBehaviour:
   passSuccesful: 0
   stage: 1
   currentPlayer: 2
-  currentAnswer: 4
   startForce: 300
   scoring: 0
 --- !u!4 &603907320
@@ -2129,7 +2129,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b51cf140f131be743a11dcb9250243d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  option: 2
+  testPanel: {fileID: 1553065829}
+  option: B
 --- !u!1 &771068035
 GameObject:
   m_ObjectHideFlags: 0
@@ -4370,9 +4371,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09e60d15dd3134b42b7267ddff7d22ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttons:
+  - {fileID: 154710605}
+  - {fileID: 399315636}
+  - {fileID: 1447790236}
+  - {fileID: 437977189}
+  qLabel: {fileID: 771068035}
   time: 0
-  answer: 0
-  correctAnswer: 3
 --- !u!1 &1619906222
 GameObject:
   m_ObjectHideFlags: 0
@@ -4515,7 +4520,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b51cf140f131be743a11dcb9250243d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  option: 4
+  testPanel: {fileID: 1553065829}
+  option: D
 --- !u!4 &1626444147 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400002, guid: 6d140d1c2394c3c4693669bc6aa224b4,
@@ -4842,7 +4848,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b51cf140f131be743a11dcb9250243d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  option: 1
+  testPanel: {fileID: 1553065829}
+  option: A
 --- !u!1 &1865740297 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100002, guid: 6d140d1c2394c3c4693669bc6aa224b4,

@@ -24,10 +24,14 @@ public class SingleplayerController : MonoBehaviour
     public float power = 300f;
     public float maxPower = 1000f;
     public float timePressed = 0f;
-    public int currentAnswer;
 	public bool failedShot;
 	LineRenderer lineRenderer;
+	int index;
+	int qNum;
+	string testName;
+	string[] questions;
 
+	
     // Start is called before the first frame update
     void Start()
     {
@@ -56,6 +60,13 @@ public class SingleplayerController : MonoBehaviour
 
     public void startGame()
     { 
+		index = PlayerPrefs.GetInt("playingIndex", 0);
+		testName = PlayerPrefs.GetString(index+"", "").Split(':')[0].Replace("{", "");
+		string[] temp = PlayerPrefs.GetString(index+"", "").Replace("\n", "").Replace("\t", "").Split('{');
+		questions = new string[temp.Length-2];
+		for(int i = 2; i < temp.Length; i++)
+			questions[i-2] = temp[i];
+		qNum = 0;
 		scoreText.GetComponent<Text>().text = "0";
         int r = rand.Next(0, 4);
         Debug.Log("Starting game");
@@ -117,14 +128,19 @@ public class SingleplayerController : MonoBehaviour
 	
     public void showQuestion()
     {
+		if(qNum >= questions.Length){
+			Debug.Log("OUT OF QUESTIONS");
+			return;
+		}
         test.SetActive(true);
         var tc = test.GetComponent<TestController>();
+		tc.SetData(questions[qNum].Split(':')[0], questions[qNum].Split('[')[1].Split(']')[0].Split(','), questions[qNum].Split(']')[1].Split(':')[1].Replace("}", ""));
     }
 
-    public void checkAnswer(int ans)
+    public void checkAnswer(bool correct)
     {
         test.SetActive(false);
-        if (ans == currentAnswer)
+        if (correct)
         {
 			aimAssist.SetActive(false);
             StopAllCoroutines();
@@ -134,6 +150,7 @@ public class SingleplayerController : MonoBehaviour
         {
             reset();
         }
+		qNum++;
     }
 	   
 	IEnumerator Wait()

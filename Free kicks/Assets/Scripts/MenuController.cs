@@ -88,11 +88,13 @@ public class MenuController : MonoBehaviour
 	
 	public void startSinglePlayer(){
 		Debug.Log("Starting singleplayer with test: "+test+ " index: "+index);
-		SceneManager.LoadScene("Singleplayer");
+		PlayerPrefs.SetInt("playingIndex", index);
+		SceneManager.LoadScene("Singleplayer");		
 	}
 	
 	public void startMultiPlayer(){
 		Debug.Log("Starting multiplayer with test: "+test+ " index: "+index);
+		PlayerPrefs.SetInt("playingIndex", index);
 		SceneManager.LoadScene("Multiplayer");
 	}
 	
