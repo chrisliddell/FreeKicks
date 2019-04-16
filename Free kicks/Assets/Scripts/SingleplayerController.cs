@@ -16,6 +16,7 @@ public class SingleplayerController : MonoBehaviour
     public GameObject barrier;
 	public GameObject scoreText; 
     public Slider powerSlider;
+	public GameObject endPanel;
     System.Random rand;
     private IEnumerator coroutine;
     Vector3 cameraPos;
@@ -26,7 +27,7 @@ public class SingleplayerController : MonoBehaviour
     public float timePressed = 0f;
 	public bool failedShot;
 	LineRenderer lineRenderer;
-	int index;
+	int index = 0;
 	int qNum;
 	string testName;
 	string[] questions;
@@ -50,6 +51,7 @@ public class SingleplayerController : MonoBehaviour
         rand = new System.Random();
         test = GameObject.Find("Test");
         test.SetActive(false);
+		endPanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -60,12 +62,16 @@ public class SingleplayerController : MonoBehaviour
 
     public void startGame()
     { 
+	    test.SetActive(false);
+		endPanel.SetActive(false);
 		index = PlayerPrefs.GetInt("playingIndex", 0);
-		testName = PlayerPrefs.GetString(index+"", "").Split(':')[0].Replace("{", "");
-		string[] temp = PlayerPrefs.GetString(index+"", "").Replace("\n", "").Replace("\t", "").Split('{');
-		questions = new string[temp.Length-2];
-		for(int i = 2; i < temp.Length; i++)
-			questions[i-2] = temp[i];
+		if(index > 0){
+			testName = PlayerPrefs.GetString(index+"", "").Split(':')[0].Replace("{", "");
+			string[] temp = PlayerPrefs.GetString(index+"", "").Replace("\n", "").Replace("\t", "").Split('{');
+			questions = new string[temp.Length-2];
+			for(int i = 2; i < temp.Length; i++)
+				questions[i-2] = temp[i];
+		}
 		qNum = 0;
 		scoreText.GetComponent<Text>().text = "0";
         int r = rand.Next(0, 4);
@@ -123,13 +129,17 @@ public class SingleplayerController : MonoBehaviour
         camera.transform.position = ball.transform.position + new Vector3(-6, 2, 0);
         camera.transform.LookAt(goal.transform);
         striker.gameObject.SetActive(false);
-        showQuestion();
+		if(index > 0)
+			showQuestion();
+		else
+			checkAnswer(true);
     }
 	
     public void showQuestion()
     {
 		if(qNum >= questions.Length){
-			Debug.Log("OUT OF QUESTIONS");
+			StopAllCoroutines();
+            EndGame();
 			return;
 		}
         test.SetActive(true);
@@ -151,6 +161,12 @@ public class SingleplayerController : MonoBehaviour
             reset();
         }
 		qNum++;
+    }
+	
+	public void EndGame()
+    {
+       	endPanel.SetActive(true);
+		endPanel.transform.GetChild(1).gameObject.GetComponent<Text>().text = "Points: "+ int.Parse(scoreText.GetComponent<Text>().text);
     }
 	   
 	IEnumerator Wait()
