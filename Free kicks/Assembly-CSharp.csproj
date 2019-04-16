@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\BallController.cs" />
     <Compile Include="Assets\Scripts\BarrierController.cs" />
     <Compile Include="Assets\Scripts\EditTestController.cs" />
+    <Compile Include="Assets\Scripts\Fraction.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\GoalDetector1Controller.cs" />
     <Compile Include="Assets\Scripts\GoalDetector2Controller.cs" />

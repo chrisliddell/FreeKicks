@@ -7,6 +7,10 @@ using System;
 
 public class GameController : MonoBehaviour
 {
+	Fraction goalsScored1;
+	Fraction correctAnswers1;
+	Fraction goalsScored2;
+	Fraction correctAnswers2;
     GameObject ball;
     GameObject test;
     GameObject goal1;
@@ -46,6 +50,10 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		goalsScored1 = new Fraction();
+		correctAnswers1 = new Fraction();
+		goalsScored2 = new Fraction();
+		correctAnswers2 = new Fraction();
 		lineRenderer = gameObject.GetComponent<LineRenderer>();
 		lineRenderer.SetVertexCount(2);
 		lineRenderer.GetComponent<Renderer>().enabled = true;
@@ -275,11 +283,19 @@ public class GameController : MonoBehaviour
        	endPanel.SetActive(true);
 		endPanel.transform.GetChild(1).GetChild(1).gameObject.GetComponent<Text>().text = "Points: "+ int.Parse(scoreP1.GetComponent<Text>().text);
 		endPanel.transform.GetChild(2).GetChild(1).gameObject.GetComponent<Text>().text = "Points: "+ int.Parse(scoreP2.GetComponent<Text>().text);
+		endPanel.transform.GetChild(1).GetChild(2).gameObject.GetComponent<Text>().text = "Goals: "+ goalsScored1.getFraction()+" ("+goalsScored1.getPercentage()+"%)";
+		endPanel.transform.GetChild(2).GetChild(2).gameObject.GetComponent<Text>().text = "Goals: "+ goalsScored2.getFraction()+" ("+goalsScored2.getPercentage()+"%)";
+		endPanel.transform.GetChild(1).GetChild(3).gameObject.GetComponent<Text>().text = "Questions: "+ correctAnswers1.getFraction()+" ("+correctAnswers1.getPercentage().ToString("F2")+"%)";
+		endPanel.transform.GetChild(2).GetChild(3).gameObject.GetComponent<Text>().text = "Questions: "+ correctAnswers2.getFraction()+" ("+correctAnswers2.getPercentage().ToString("F2")+"%)";
     }
 
     public void checkAnswer(bool correct)
     {
         test.SetActive(false);
+		if(currentPlayer == 1)
+			correctAnswers1.increaseDenominator(1);
+		else
+			correctAnswers2.increaseDenominator(1);
         if (correct)
         {
             Debug.Log("Correct");
@@ -288,10 +304,12 @@ public class GameController : MonoBehaviour
             {
                 if (currentPlayer == 1) //remove goal so they can see
                 {
+					correctAnswers1.increaseNumerator(1);
                     goal1.SetActive(false);
                 }
                 else
                 {
+					correctAnswers2.increaseNumerator(1);
                     goal2.SetActive(false);
                 }
             }
@@ -411,6 +429,11 @@ public class GameController : MonoBehaviour
             if (Physics.Raycast(ray.origin, dir, out hit, 200f)){
                 if (hit.collider.tag == "Ball")
                 {
+					if(currentPlayer == 1)
+						goalsScored1.increaseDenominator(1);
+					else
+						goalsScored2.increaseDenominator(1);
+					
                     Debug.Log("Hit ball");
                     powerSlider.gameObject.SetActive(true);
                     StartCoroutine(HoldClick(dir, hit.point));
@@ -496,12 +519,15 @@ public class GameController : MonoBehaviour
 		scoring = true;
 		passSuccesful = true;
 		StopAllCoroutines();
+					
 		int score;
 		if(team == 1){
+			goalsScored1.increaseNumerator(1);
 			score = int.Parse(scoreP1.GetComponent<Text>().text);
 			score+=50;
 			scoreP1.GetComponent<Text>().text = score + "";
 		} else {
+			goalsScored2.increaseNumerator(1);
 			score = int.Parse(scoreP2.GetComponent<Text>().text);
 			score+=50;
 			scoreP2.GetComponent<Text>().text = score + "";

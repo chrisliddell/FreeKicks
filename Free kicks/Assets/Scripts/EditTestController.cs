@@ -26,9 +26,11 @@ public class EditTestController : MonoBehaviour
 	public GameObject newName;
 	public GameObject buttonCancelChangeName;
 	public GameObject buttonChangeName;
+	public GameObject invalidPanel;
 	public int editingTest;
 	public int editingQuestion;
 	public string answer;
+	bool valid;
 	GameObject input;
 	string[] tests;
 	string[] prevTests;
@@ -38,12 +40,14 @@ public class EditTestController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		valid = true;
         test = "";
 		quest = "";
 		answer = "A";
 		editingTest = 0;
 		editingQuestion = 0;
 		madeChanges = false;
+		invalidPanel.SetActive(false);
 		blurPanel.SetActive(false);
 		changeNamePanel.SetActive(false);
 		cancelChangesPanel.SetActive(false);
@@ -100,8 +104,10 @@ public class EditTestController : MonoBehaviour
 					if(options[1].GetComponent<Text>().text != ""){
 						if(options[2].GetComponent<Text>().text != ""){
 							if(options[3].GetComponent<Text>().text != ""){
-								if(answer != "")
-									return true;
+								if(answer != ""){
+									if(valid)
+										return true;
+								}
 							}
 						}
 					}
@@ -365,5 +371,21 @@ public class EditTestController : MonoBehaviour
 		madeChanges = true;
 		cancelChangeName();
 		updateTests();
+	}
+	
+	public void validateQuestion(){
+		input = GameObject.Find("Question");
+		string q = input.GetComponent<InputField>().text;
+			
+		if(q.Contains("{") || q.Contains("}") || q.Contains("[") || q.Contains("]") || q.Contains(":")){
+			invalidPanel.SetActive(true);
+			valid = false;
+			return;
+		}
+		valid = true;		
+	}
+	
+	public void hideInvalidPanel(){
+		invalidPanel.SetActive(false);
 	}
 }

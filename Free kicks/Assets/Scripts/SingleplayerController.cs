@@ -7,6 +7,8 @@ using System;
 
 public class SingleplayerController : MonoBehaviour
 {
+	Fraction goalsScored;
+	Fraction correctAnswers;
     GameObject ball;
     GameObject test;
     GameObject goal;
@@ -36,6 +38,8 @@ public class SingleplayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		goalsScored = new Fraction();
+		correctAnswers = new Fraction();
 		lineRenderer = gameObject.GetComponent<LineRenderer>();
 		lineRenderer.SetVertexCount(2);
 		lineRenderer.GetComponent<Renderer>().enabled = true;
@@ -150,8 +154,10 @@ public class SingleplayerController : MonoBehaviour
     public void checkAnswer(bool correct)
     {
         test.SetActive(false);
+		correctAnswers.increaseDenominator(1);
         if (correct)
         {
+			correctAnswers.increaseNumerator(1);
 			aimAssist.SetActive(false);
             StopAllCoroutines();
             StartCoroutine(Wait());
@@ -167,7 +173,9 @@ public class SingleplayerController : MonoBehaviour
     {
        	endPanel.SetActive(true);
 		endPanel.transform.GetChild(1).gameObject.GetComponent<Text>().text = "Points: "+ int.Parse(scoreText.GetComponent<Text>().text);
-    }
+		endPanel.transform.GetChild(2).gameObject.GetComponent<Text>().text = "Goals: "+ goalsScored.getNumerator();
+		endPanel.transform.GetChild(3).gameObject.GetComponent<Text>().text = "Questions: "+ correctAnswers.getFraction()+" ("+correctAnswers.getPercentage().ToString("F2")+"%)";
+	}
 	   
 	IEnumerator Wait()
     {
@@ -189,6 +197,7 @@ public class SingleplayerController : MonoBehaviour
                 if (hit.collider.tag == "Ball")
                 {
                     Debug.Log("Hit ball");
+					goalsScored.increaseDenominator(1);
                     powerSlider.gameObject.SetActive(true);
                     StartCoroutine(HoldClick(dir, hit.point));
                 }
@@ -276,6 +285,7 @@ public class SingleplayerController : MonoBehaviour
 		score+=50;
 		scoreText.GetComponent<Text>().text = score + "";
         GameObject.Find("ScoreText").GetComponent<ScoreText>().show();
+		goalsScored.increaseNumerator(1);
     }
 	
 	public void quitSingleplayer(){

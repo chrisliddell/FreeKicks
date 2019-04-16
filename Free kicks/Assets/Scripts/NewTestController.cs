@@ -15,11 +15,15 @@ public class NewTestController : MonoBehaviour
 	public GameObject buttonAdd;
 	public GameObject buttonFinish;
 	public GameObject questionsPanels;
+	public GameObject invalidPanel;
 	public string answer;
+	bool valid;
 	GameObject input;
     // Start is called before the first frame update
     void Start()
     {
+		valid = true;
+		invalidPanel.SetActive(false);
 		answer = "A";
         test = "";
 		quest = "";
@@ -55,7 +59,8 @@ public class NewTestController : MonoBehaviour
 					if(options[1].GetComponent<Text>().text != ""){
 						if(options[2].GetComponent<Text>().text != ""){
 							if(options[3].GetComponent<Text>().text != ""){
-								return true;
+								if(valid)
+									return true;
 							}
 						}
 					}
@@ -154,5 +159,21 @@ public class NewTestController : MonoBehaviour
 			toggles[2].GetComponent<Toggle>().isOn = false;
 			toggles[3].GetComponent<Toggle>().isOn = true;
 		}
+	}
+
+	public void validateQuestion(){
+		input = GameObject.Find("Question");
+		string q = input.GetComponent<InputField>().text;
+			
+		if(q.Contains("{") || q.Contains("}") || q.Contains("[") || q.Contains("]") || q.Contains(":")){
+			invalidPanel.SetActive(true);
+			valid = false;
+			return;
+		}
+		valid = true;		
+	}
+	
+	public void hideInvalidPanel(){
+		invalidPanel.SetActive(false);
 	}
 }
