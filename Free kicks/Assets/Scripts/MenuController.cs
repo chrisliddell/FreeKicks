@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class MenuController : MonoBehaviour
 	public GameObject buttonNewTest;
 	public GameObject buttonEditTest;
 	public GameObject testsList;
+	public GameObject shuffleQuestions;
 	public string test;
 	public int index;
 	bool singleplayer;
@@ -89,12 +91,14 @@ public class MenuController : MonoBehaviour
 	public void startSinglePlayer(){
 		Debug.Log("Starting singleplayer with test: "+test+ " index: "+index);
 		PlayerPrefs.SetInt("playingIndex", index);
+		PlayerPrefs.SetInt("shuffleTest", shuffleQuestions.GetComponent<Toggle>().isOn?1:0);
 		SceneManager.LoadScene("Singleplayer");		
 	}
 	
 	public void startMultiPlayer(){
 		Debug.Log("Starting multiplayer with test: "+test+ " index: "+index);
 		PlayerPrefs.SetInt("playingIndex", index);
+		PlayerPrefs.SetInt("shuffleTest", shuffleQuestions.GetComponent<Toggle>().isOn?1:0);
 		SceneManager.LoadScene("Multiplayer");
 	}
 	

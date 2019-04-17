@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+ 
 public class ScoreText : MonoBehaviour
 {
     public float lowerLimit;
-    public float upperLimit;
+    float upperLimit = Screen.height / 2;
     public float speed;
     public int team;
     public string text;

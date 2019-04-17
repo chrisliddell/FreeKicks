@@ -33,11 +33,13 @@ public class SingleplayerController : MonoBehaviour
 	int qNum;
 	string testName;
 	string[] questions;
+	bool shuffle;
 
 	
     // Start is called before the first frame update
     void Start()
     {
+		shuffle = PlayerPrefs.GetInt("shuffleTest", 0) == 1 ? true:false;
 		goalsScored = new Fraction();
 		correctAnswers = new Fraction();
 		lineRenderer = gameObject.GetComponent<LineRenderer>();
@@ -77,6 +79,7 @@ public class SingleplayerController : MonoBehaviour
 				questions[i-2] = temp[i];
 		}
 		qNum = 0;
+		if(shuffle) shuffleTest();
 		scoreText.GetComponent<Text>().text = "0";
         int r = rand.Next(0, 4);
         Debug.Log("Starting game");
@@ -122,6 +125,20 @@ public class SingleplayerController : MonoBehaviour
         ball.GetComponent<BallController>().resetPos();
         striker.GetComponent<StrikerController>().getBall(ball);
     }
+	
+	//swap shuffle
+	public void shuffleTest(){
+		 Debug.Log("OLD TEST:\n");
+		foreach(string s in questions) Debug.Log(s);
+		for(int i = 0; i < questions.Length; i++){
+			int r = rand.Next(0, questions.Length);
+			string temp = questions[i];
+			questions[i] = questions[r];
+			questions[r] = temp;
+		}
+		Debug.Log("NEW TEST:\n");
+		foreach(string s in questions) Debug.Log(s);
+	}
 
     public void shootMode(GameObject player)
     {
