@@ -19,6 +19,7 @@ public class SingleplayerController : MonoBehaviour
 	public GameObject scoreText; 
     public Slider powerSlider;
 	public GameObject endPanel;
+	public GameObject questionsLeft;
     System.Random rand;
     private IEnumerator coroutine;
     Vector3 cameraPos;
@@ -79,6 +80,8 @@ public class SingleplayerController : MonoBehaviour
 				questions[i-2] = temp[i];
 		}
 		qNum = 0;
+		
+		questionsLeft.GetComponent<Text>().text = "Questions Left: "+questions.Length;
 		if(shuffle) shuffleTest();
 		scoreText.GetComponent<Text>().text = "0";
         int r = rand.Next(0, 4);
@@ -163,6 +166,7 @@ public class SingleplayerController : MonoBehaviour
             EndGame();
 			return;
 		}
+		questionsLeft.GetComponent<Text>().text = "Questions Left: "+(questions.Length-(qNum+1));
         test.SetActive(true);
         var tc = test.GetComponent<TestController>();
 		tc.SetData(questions[qNum].Split(':')[0], questions[qNum].Split('[')[1].Split(']')[0].Split(','), questions[qNum].Split(']')[1].Split(':')[1].Replace("}", ""));
@@ -306,6 +310,10 @@ public class SingleplayerController : MonoBehaviour
     }
 	
 	public void quitSingleplayer(){
-		SceneManager.LoadScene("UserInterface");
+		SceneManager.LoadScene("FreeKicksMenu");
+	}
+		
+	public void restart(){
+		SceneManager.LoadScene("Singleplayer");
 	}
 }

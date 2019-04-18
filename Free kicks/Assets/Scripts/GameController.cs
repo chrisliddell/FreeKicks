@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour
     public GameObject enemyDefender;
 	public GameObject endPanel;
     public Slider powerSlider;
+	public GameObject questionsLeft;
     System.Random rand;
     private IEnumerator coroutine;
     public Vector3[] team1DefensePositions = { new Vector3(-34.2f, 89f, -70f), new Vector3(-116f, -455f, -57f), new Vector3(-612f, -228f, -61f) };
@@ -94,6 +95,8 @@ public class GameController : MonoBehaviour
 				questions[i-2] = temp[i];
 		}
 		qNum = 0;
+		
+		questionsLeft.GetComponent<Text>().text = "Questions Left: "+questions.Length;
 		scoreP1.GetComponent<Text>().text = "0";
 		scoreP2.GetComponent<Text>().text = "0";
         playing = true;
@@ -104,7 +107,6 @@ public class GameController : MonoBehaviour
         if (r < 0f)
         {
             currentPlayer = 1;
-
         }
         else
         {
@@ -273,6 +275,7 @@ public class GameController : MonoBehaviour
 			EndGame();
 			return;
 		}
+		questionsLeft.GetComponent<Text>().text = "Questions Left: "+(questions.Length-(qNum+1));
         test.SetActive(true);
         var tc = test.GetComponent<TestController>();
 		tc.SetData(questions[qNum].Split(':')[0], questions[qNum].Split('[')[1].Split(']')[0].Split(','), questions[qNum].Split(']')[1].Split(':')[1].Replace("}", ""));
@@ -596,6 +599,10 @@ public class GameController : MonoBehaviour
 	}
 	
 	public void quitMultiplayer(){
-		SceneManager.LoadScene("UserInterface");
+		SceneManager.LoadScene("FreeKicksMenu");
+	}
+	
+	public void restart(){
+		SceneManager.LoadScene("Multiplayer");
 	}
 }
