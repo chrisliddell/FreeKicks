@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuController : MonoBehaviour
+public class FreeKicksMenuController : MonoBehaviour
 {
 	public GameObject buttonPlay;
 	public GameObject buttonInfo;
