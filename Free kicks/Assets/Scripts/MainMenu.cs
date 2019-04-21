@@ -32,6 +32,7 @@ public class MainMenu : MonoBehaviour
 	}
 	
 	public void exit(){
+		PlayerPrefs.Save();
 		Application.Quit();
 	}
 	

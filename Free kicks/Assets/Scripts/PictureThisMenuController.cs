@@ -44,6 +44,7 @@ public class PictureThisMenuController : MonoBehaviour
 	}	
 	
 	public void exit(){
+		PlayerPrefs.Save();
 		Application.Quit();
 	}
 	
@@ -59,6 +60,6 @@ public class PictureThisMenuController : MonoBehaviour
 	
 	public void editWordList(){
 		Debug.Log("Edit word list");
-		editWordListMenu.GetComponent<EditTestController>().show();
+		editWordListMenu.GetComponent<EditWordList>().show();
 	}
 }

@@ -76,4 +76,13 @@ public class TestScrollView : MonoBehaviour {
 		Controller.GetComponent<FreeKicksMenuController>().test = name;
 		Controller.GetComponent<FreeKicksMenuController>().index = id;
 	}
+	
+	public void PT_ButtonClicked(int id, string name, bool type, int w){ //type 0 = wordlist, 1 = word
+		Debug.Log("Name: "+name + " button clicked. "+type + " index: "+id + " w#:"+w);
+		if(type)
+			Controller.GetComponent<EditWordList>().fillWord(id, w, name);
+		else
+			Controller.GetComponent<EditWordList>().fillWordList(id, name);
+	}
+	
 }

@@ -324,16 +324,11 @@ public class EditTestController : MonoBehaviour
 		Debug.Log("Deleting test #"+editingTest);
 		List<string> list = new List<string>();
 		index = PlayerPrefs.GetInt("index", 0);
-		for(int i = 1; i < index; i++){
-			if(i != editingTest)
-				list.Add(PlayerPrefs.GetString(i+"", ""));
+		PlayerPrefs.DeleteKey(editingTest+"");
+		for(int i = editingTest; i < index; i++){
+			PlayerPrefs.SetString(i+"", PlayerPrefs.GetString(""+(i+1), ""));
 		}
-		PlayerPrefs.DeleteAll();
-		index = 1;
-		foreach(string s in list){
-			PlayerPrefs.SetString(index+"", s);
-			index++;
-		}
+		index--;
 		madeChanges = true;
 		PlayerPrefs.SetInt("index", index);
 		updateTests();

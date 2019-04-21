@@ -85,6 +85,7 @@ public class FreeKicksMenuController : MonoBehaviour
 	}
 	
 	public void exit(){
+		PlayerPrefs.Save();
 		Application.Quit();
 	}
 	
