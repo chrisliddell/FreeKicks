@@ -49,11 +49,12 @@ public class PictureThisMenuController : MonoBehaviour
 	
 	public void start(){
 		Debug.Log("Starting game with wod list: "+wordList);
+		SceneManager.LoadScene("PictureThis");	
 	}
 	
 	public void newWordList(){
 		Debug.Log("New word list");
-		newWordListMenu.GetComponent<NewTestController>().show();
+		newWordListMenu.GetComponent<NewWordList>().show();
 	}
 	
 	public void editWordList(){
