@@ -56,6 +56,7 @@ public class NewWordList : MonoBehaviour
 	public void hide(){
 		gameObject.SetActive(false);
 		mainMenu.SetActive(true);
+		mainMenu.GetComponent<PictureThisMenuController>().updateWordLists();
 	}
 	
 	public void Cancel(){

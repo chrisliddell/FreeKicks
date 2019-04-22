@@ -60,6 +60,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ColorPicker\CameraBgColor.cs" />
+    <Compile Include="Assets\ColorPicker\ColorPicker.cs" />
+    <Compile Include="Assets\ColorPicker\DemoGUI_ColorPickerDemo.cs" />
+    <Compile Include="Assets\ColorPicker\DrawGUIOrderColorPicker.cs" />
+    <Compile Include="Assets\ColorPicker\ObjectColor.cs" />
+    <Compile Include="Assets\ColorPicker\PSColor.cs" />
     <Compile Include="Assets\EasyGrassSubstance\Example Scene\ObjectRotation.cs" />
     <Compile Include="Assets\Scripts\ArenaController.cs" />
     <Compile Include="Assets\Scripts\BallController.cs" />
@@ -76,6 +82,7 @@
     <Compile Include="Assets\Scripts\NewTestController.cs" />
     <Compile Include="Assets\Scripts\NewWordList.cs" />
     <Compile Include="Assets\Scripts\OptionController.cs" />
+    <Compile Include="Assets\Scripts\PictureThisController.cs" />
     <Compile Include="Assets\Scripts\PictureThisMenuController.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\ScoreText.cs" />
@@ -85,6 +92,7 @@
     <Compile Include="Assets\Scripts\TestController.cs" />
     <Compile Include="Assets\Scripts\TestScrollView.cs" />
     <None Include="Assets\player\Info.txt" />
+    <None Include="Assets\ColorPicker\license.txt" />
     <None Include="Assets\EasyGrassSubstance\Documentation.txt" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/chris/Desktop/TCU 658/Free kicks/free-kicks/Free kicks/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

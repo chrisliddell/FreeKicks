@@ -4,10 +4,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PictureThisMenuController : MonoBehaviour
+public class PictureThisController : MonoBehaviour
 {
-	public GameObject buttonPlay;
-	public GameObject buttonHelp;
 	public GameObject helpPanel;
 	public GameObject blurPanel;
 	public GameObject newWordListMenu;
@@ -16,16 +14,17 @@ public class PictureThisMenuController : MonoBehaviour
 	public GameObject buttonNewWordList;
 	public GameObject buttonEditWordList;
 	public GameObject WordLists;
-	public GameObject Player1;
-	public GameObject Player2;
 	public string wordList;
 	public int index;
 	string player1, player2;
+	string currentColor = "Black";
+	
     // Start is called before the first frame update
     void Start()
-	{
-		updatePlayers();
-        updateWordLists();
+    {
+       	index = PlayerPrefs.GetInt("PT_playingIndex", 0);
+		player1 = PlayerPrefs.GetString("PT_player1", "Player 1");
+		player2 = PlayerPrefs.GetString("PT_player2", "Player 2");
     }
 
     // Update is called once per frame
@@ -39,19 +38,11 @@ public class PictureThisMenuController : MonoBehaviour
 		d.ClearOptions();
 		List<string> options = new List<string>();
 		string s = "";
-		index = PlayerPrefs.GetInt("PT_index", 0);
-		for(int i = 1; i < index; i++){
+		for(int i = 1, index = PlayerPrefs.GetInt("PT_index", 0); i < index; i++){
 			if((s = PlayerPrefs.GetString("PT_"+i,"")) != "")
 				options.Add(s.Split(':')[0].Substring(1));
 		}
 		d.AddOptions(options);
-	}
-	
-	public void updatePlayers(){
-		player1 = PlayerPrefs.GetString("PT_player1", "");
-		player2 = PlayerPrefs.GetString("PT_player2", "");
-		Player1.transform.parent.gameObject.GetComponent<InputField>().text = player1;
-		Player2.transform.parent.gameObject.GetComponent<InputField>().text = player2;
 	}
 	
 	public void showHelp(){
@@ -60,10 +51,12 @@ public class PictureThisMenuController : MonoBehaviour
 
 	}
 	
-	public void hideHelp(){
-		blurPanel.SetActive(false);
-		helpPanel.SetActive(false);
-		
+	public void pickedColor(string c){
+		currentColor = c;
+	}
+	
+	public void exitGame(){
+		SceneManager.LoadScene("PictureThisMenu");	
 	}	
 	
 	public void exit(){
@@ -72,18 +65,8 @@ public class PictureThisMenuController : MonoBehaviour
 	}
 	
 	public void start(){
-		if(wordListPicker.GetComponent<Dropdown>().options.Count == 0){
-			Debug.Log("There are no wordlists");
-			return;
-		} 
-		player1 = Player1.GetComponent<Text>().text;
-		player2 = Player2.GetComponent<Text>().text;
-		index = wordListPicker.GetComponent<Dropdown>().value + 1;
-		Debug.Log("Starting game with word list: "+index);
-		PlayerPrefs.SetInt("PT_playingIndex", index);
-		PlayerPrefs.SetString("PT_player1", player1);
-		PlayerPrefs.SetString("PT_player2", player2);
-		SceneManager.LoadScene("PictureThis");
+		Debug.Log("Starting game with word list: "+wordList);
+		SceneManager.LoadScene("PictureThis");	
 	}
 	
 	public void newWordList(){

@@ -123,6 +123,7 @@ public class EditWordList : MonoBehaviour
 		clearTextFields();
 		gameObject.SetActive(false);
 		mainMenu.SetActive(true);
+		mainMenu.GetComponent<PictureThisMenuController>().updateWordLists();
 	}
 	
 	public void Cancel(){
