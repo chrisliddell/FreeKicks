@@ -12,7 +12,6 @@ public class ColorPicker : MonoBehaviour {
 	public string colorGetFunctionName = "OnGetColor";
 	public bool useExternalDrawer = false;
 	public int drawOrder = 0;
-
 	private Color TempColor; 
 	private Color SelectedColor;
 
@@ -28,7 +27,7 @@ public class ColorPicker : MonoBehaviour {
 	ESTATE mState = ESTATE.Hidden;
 	
 	int sizeFull = 200;
-	int sizeHidden = 20;
+	int sizeHidden = 40;
 	float animTime = 0.25f;
 	float dt = 0;
 
@@ -277,6 +276,7 @@ public class ColorPicker : MonoBehaviour {
 			txColorDisplay.SetPixel(0, 0, color);
 			txColorDisplay.Apply();
 		}
+		
 	}
 
 	public Color GetColor()
@@ -297,5 +297,6 @@ public class ColorPicker : MonoBehaviour {
 		{
 			receiver.SendMessage(colorSetFunctionName, SelectedColor, SendMessageOptions.DontRequireReceiver);
 		}
+		GameObject.Find("PictureThisPanel").GetComponent<PictureThisController>().pickColor(SelectedColor);
 	}
 }
