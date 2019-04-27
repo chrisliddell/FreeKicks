@@ -25,18 +25,28 @@ public class PictureThisController : MonoBehaviour
 	public string wordList;
 	public int index;
 	public int size = 1;
+	public GameObject paintImage;
+	PointerEventData pointerED;
+    EventSystem eventSystem;
+	GraphicRaycaster raycaster;
 	string player1, player2;
 	Color currentColor = Color.black;
+	bool painting;
 	Ray ray;
 	RaycastHit hit;
     
 	// Start is called before the first frame update
     void Start()
     {
+		painting = false;
+		paintImage.SetActive(false);
+		raycaster = GetComponent<GraphicRaycaster>();
+		eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
        	index = PlayerPrefs.GetInt("PT_playingIndex", 0);
 		player1 = PlayerPrefs.GetString("PT_player1", "Player 1");
 		player2 = PlayerPrefs.GetString("PT_player2", "Player 2");
 		colorPicker.GetComponent<ColorPicker>().startPos = new Vector2(180, 300);
+		changeSize();
     }
 
     // Update is called once per frame
@@ -139,11 +149,41 @@ public class PictureThisController : MonoBehaviour
 	}
 	
 	public void paint(){
-		Debug.Log("HOLA " + Time.deltaTime);
+		if(!painting) return;
+       
+		pointerED = new PointerEventData(eventSystem);
+        //Set the Pointer Event Position to that of the mouse position
+        pointerED.position = Input.mousePosition;
+
+		List<RaycastResult> results = new List<RaycastResult>();
+        raycaster.Raycast(pointerED, results);
+		//For every result returned, output the name of the GameObject on the Canvas hit by the Ray
+		int i = 0;
+		bool hitPanel = false;
+		foreach (RaycastResult result in results)
+		{
+			if(result.gameObject.name == "DrawingPanel"){
+				hitPanel = true;
+				break;
+			} else
+				i++;
+		}
+
+		if(hitPanel){
+			paintImage.SetActive(true);
+			GameObject pI = Object.Instantiate(paintImage, paintImage.transform.parent);
+			pI.GetComponent<Image>().color = currentColor;
+			pI.GetComponent<RectTransform>().sizeDelta = new Vector2 (size, size);
+			Vector3 p = new Vector3(Input.mousePosition.x,  Input.mousePosition.y, 0);
+			p.z = results[i].distance;//distance of the plane from the camera
+			pI.transform.position = Camera.main.ScreenToWorldPoint(p);
+			paintImage.SetActive(false);
+		}
 	}
 
 	public void hover()
     {
+		painting = true;
 		Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
 		texture.alphaIsTransparency = true;
 		Debug.Log("H: " + texture.height + "  W: " +texture.width);
@@ -163,6 +203,7 @@ public class PictureThisController : MonoBehaviour
 	}*/
 	
 	public void stopHover(){
+		painting = false;
 		Cursor.SetCursor(null, Vector2.zero, cursorMode);
 		//pointerImage.SetActive(false);
 	}
