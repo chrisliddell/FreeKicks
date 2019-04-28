@@ -12,48 +12,68 @@ public class PictureThisController : MonoBehaviour
 	public GameObject newWordListMenu;
 	public GameObject editWordListMenu;
 	public GameObject wordListPicker;
-	public GameObject buttonNewWordList;
-	public GameObject buttonEditWordList;
-	public GameObject WordLists;
+	public GameObject paintbrush;
+	public GameObject circleBrush;
+	public GameObject rectBrush;
+	public GameObject highlightCircle;
+	public GameObject highlightRect;
+	public Text wordTyped;
 	public GameObject colorPicker;
 	public GameObject slider;
 	public GameObject sizeLabel;
-	public GameObject CurrentColor;
 	public Texture2D cursorTexture;
     public CursorMode cursorMode = CursorMode.Auto;
     public Vector2 hotSpot = Vector2.zero;
-	public string wordList;
+	public string wordList, letter;
 	public int index;
 	public int size = 1;
-	public GameObject paintImage;
 	PointerEventData pointerED;
+	const string textPlaceholder = "Type the word that's being drawn";
     EventSystem eventSystem;
 	GraphicRaycaster raycaster;
 	string player1, player2;
 	Color currentColor = Color.black;
-	bool painting;
+	bool inCanvas;
 	Ray ray;
 	RaycastHit hit;
     
 	// Start is called before the first frame update
     void Start()
     {
-		painting = false;
-		paintImage.SetActive(false);
+		inCanvas = false;
 		raycaster = GetComponent<GraphicRaycaster>();
 		eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
        	index = PlayerPrefs.GetInt("PT_playingIndex", 0);
 		player1 = PlayerPrefs.GetString("PT_player1", "Player 1");
 		player2 = PlayerPrefs.GetString("PT_player2", "Player 2");
-		colorPicker.GetComponent<ColorPicker>().startPos = new Vector2(180, 300);
 		changeSize();
+		updateHighlights();
     }
 
     // Update is called once per frame
     void Update()
     {
-		/*IF NO SE ESTA DIBUJANDO THEN REQUEST FOCUS AL GUESS WORD INPUT*/
-    }
+		if(Input.GetKeyDown(KeyCode.Backspace) && wordTyped.text != textPlaceholder){
+			if(wordTyped.text.Length > 1)
+				wordTyped.text = wordTyped.text.Remove(wordTyped.text.Length - 1); 
+			else
+				wordTyped.text = textPlaceholder;
+		}
+		else if((Input.GetKeyDown(KeyCode.Return))){
+			if(wordTyped.text != "" && wordTyped.text != textPlaceholder)
+				checkWord();
+		}
+		else if((letter = checkLetter()) != ""){
+			if(wordTyped.text == textPlaceholder)
+				wordTyped.text = letter; 
+			else
+				wordTyped.text += letter;
+		}
+	}
+	
+	public void checkWord(){
+		
+	}
 	
 	public void updateWordLists(){
 		Dropdown d = wordListPicker.GetComponent<Dropdown>();
@@ -69,7 +89,7 @@ public class PictureThisController : MonoBehaviour
 
 	public void pickColor(Color color){
 		currentColor = color;
-		CurrentColor.GetComponent<Image>().color = currentColor;
+		updateHighlights();
 		Debug.Log("Selected new color:  "+currentColor.ToString());
 	}
 	
@@ -115,8 +135,22 @@ public class PictureThisController : MonoBehaviour
 				currentColor = Color.black;
 				break;
 		}
-		CurrentColor.GetComponent<Image>().color = currentColor;
+		updateHighlights();
 		Debug.Log("Selected new color:  "+currentColor.ToString());
+	}
+	
+	public void updateHighlights(){
+		if(highlightCircle.active){
+			highlightRect.SetActive(true);
+			highlightCircle.GetComponent<Image>().color = currentColor;
+			highlightRect.GetComponent<Image>().color = currentColor;
+			highlightRect.SetActive(false);
+		} else {
+			highlightCircle.SetActive(false);
+			highlightCircle.GetComponent<Image>().color = currentColor;
+			highlightRect.GetComponent<Image>().color = currentColor;
+			highlightCircle.SetActive(false);
+		}
 	}
 	
 	public void changeSize(){
@@ -149,7 +183,7 @@ public class PictureThisController : MonoBehaviour
 	}
 	
 	public void paint(){
-		if(!painting) return;
+		if(!inCanvas) return;
        
 		pointerED = new PointerEventData(eventSystem);
         //Set the Pointer Event Position to that of the mouse position
@@ -170,20 +204,18 @@ public class PictureThisController : MonoBehaviour
 		}
 
 		if(hitPanel){
-			paintImage.SetActive(true);
-			GameObject pI = Object.Instantiate(paintImage, paintImage.transform.parent);
+			GameObject pI = Object.Instantiate(paintbrush, drawingPanel.transform);
 			pI.GetComponent<Image>().color = currentColor;
 			pI.GetComponent<RectTransform>().sizeDelta = new Vector2 (size, size);
 			Vector3 p = new Vector3(Input.mousePosition.x,  Input.mousePosition.y, 0);
 			p.z = results[i].distance;//distance of the plane from the camera
 			pI.transform.position = Camera.main.ScreenToWorldPoint(p);
-			paintImage.SetActive(false);
 		}
 	}
-
+	
 	public void hover()
     {
-		painting = true;
+		inCanvas = true;
 		Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
 		texture.alphaIsTransparency = true;
 		Debug.Log("H: " + texture.height + "  W: " +texture.width);
@@ -203,8 +235,85 @@ public class PictureThisController : MonoBehaviour
 	}*/
 	
 	public void stopHover(){
-		painting = false;
+		inCanvas = false;
 		Cursor.SetCursor(null, Vector2.zero, cursorMode);
 		//pointerImage.SetActive(false);
+	}
+	
+	public void letterPressed(){/*
+		Debug.Log("*********************"+wordInput.GetComponent<InputField>().text + "  cccccc? "+wordInput.GetComponent<InputField>().text.Length +"ANCHOR: " +wordInput.GetComponent<InputField>().selectionAnchorPosition );
+		wordInput.GetComponent<InputField>().selectionAnchorPosition = wordInput.GetComponent<InputField>().text.Length-1;
+		wordInput.GetComponent<InputField>().caretPosition = wordInput.GetComponent<InputField>().text.Length-1;*/
+		//wordTyped.GetComponent<InputField>().DeactivateInputField();
+	}
+	
+	public void selectedBrush(int type){
+		if(type == 0){
+			paintbrush = circleBrush;
+			highlightCircle.SetActive(true);
+			highlightRect.SetActive(false);
+		}
+		else{
+			paintbrush = rectBrush;
+			highlightCircle.SetActive(false);
+			highlightRect.SetActive(true);
+		}
+	}
+	
+	public string checkLetter(){
+		string l = "";
+		if((Input.GetKeyDown(KeyCode.A)))
+			l = "a";
+		else if((Input.GetKeyDown(KeyCode.B)))
+			l = "b";
+		else if((Input.GetKeyDown(KeyCode.C)))
+			l = "c";
+		else if((Input.GetKeyDown(KeyCode.D)))
+			l = "d";
+		else if((Input.GetKeyDown(KeyCode.E)))
+			l = "e";
+		else if((Input.GetKeyDown(KeyCode.F)))
+			l = "f";
+		else if((Input.GetKeyDown(KeyCode.G)))
+			l = "g";
+		else if((Input.GetKeyDown(KeyCode.H)))
+			l = "h";
+		else if((Input.GetKeyDown(KeyCode.I)))
+			l = "i";
+		else if((Input.GetKeyDown(KeyCode.J)))
+			l = "j";
+		else if((Input.GetKeyDown(KeyCode.K)))
+			l = "k";
+		else if((Input.GetKeyDown(KeyCode.L)))
+			l = "l";
+		else if((Input.GetKeyDown(KeyCode.M)))
+			l = "m";
+		else if((Input.GetKeyDown(KeyCode.N)))
+			l = "n";
+		else if((Input.GetKeyDown(KeyCode.O)))
+			l = "o";
+		else if((Input.GetKeyDown(KeyCode.P)))
+			l = "p";
+		else if((Input.GetKeyDown(KeyCode.Q)))
+			l = "q";
+		else if((Input.GetKeyDown(KeyCode.R)))
+			l = "r";
+		else if((Input.GetKeyDown(KeyCode.S)))
+			l = "s";
+		else if((Input.GetKeyDown(KeyCode.T)))
+			l = "t";
+		else if((Input.GetKeyDown(KeyCode.U)))
+			l = "u";
+		else if((Input.GetKeyDown(KeyCode.V)))
+			l = "v";
+		else if((Input.GetKeyDown(KeyCode.W)))
+			l = "w";
+		else if((Input.GetKeyDown(KeyCode.X)))
+			l = "x";
+		else if((Input.GetKeyDown(KeyCode.Y)))
+			l = "y";
+		else if((Input.GetKeyDown(KeyCode.Z)))
+			l = "z";
+		return l;
 	}
 }

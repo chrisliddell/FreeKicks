@@ -6,7 +6,7 @@ public class ColorPicker : MonoBehaviour {
 	public Texture2D colorSpace;
 	public Texture2D alphaGradient;
 	public string Title = "Color Picker";
-	public Vector2 startPos = new Vector2(20, 20);
+	public Vector2 startPos;
 	public GameObject receiver;
 	public string colorSetFunctionName = "OnSetNewColor";
 	public string colorGetFunctionName = "OnGetColor";
