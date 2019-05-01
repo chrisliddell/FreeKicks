@@ -8,15 +8,12 @@ using UnityEngine.UI;
 public class PictureThisController : MonoBehaviour
 {
 	public GameObject drawingPanel;
-	public GameObject blurPanel;
-	public GameObject newWordListMenu;
-	public GameObject editWordListMenu;
-	public GameObject wordListPicker;
 	public GameObject paintbrush;
 	public GameObject circleBrush;
 	public GameObject rectBrush;
 	public GameObject highlightCircle;
 	public GameObject highlightRect;
+	public GameObject playersPanel;
 	public Text wordTyped;
 	public GameObject colorPicker;
 	public GameObject slider;
@@ -31,23 +28,34 @@ public class PictureThisController : MonoBehaviour
 	const string textPlaceholder = "Type the word that's being drawn";
     EventSystem eventSystem;
 	GraphicRaycaster raycaster;
-	string player1, player2;
+	string player1, player2, word;
+	List<string> wordsP1;
+	List<string> wordsP2;
 	Color currentColor = Color.black;
 	bool inCanvas;
 	Ray ray;
 	RaycastHit hit;
-    
+    System.Random rand;
+	
 	// Start is called before the first frame update
     void Start()
     {
 		inCanvas = false;
+		rand = new System.Random();
 		raycaster = GetComponent<GraphicRaycaster>();
 		eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
        	index = PlayerPrefs.GetInt("PT_playingIndex", 0);
+		wordList = PlayerPrefs.GetString("PT_"+index, "");
+		wordsP1 = new List<string>();
+		wordsP2 = new List<string>();
+		if(wordList != ""){
+			prepWords();
+		}
 		player1 = PlayerPrefs.GetString("PT_player1", "Player 1");
 		player2 = PlayerPrefs.GetString("PT_player2", "Player 2");
 		changeSize();
 		updateHighlights();
+		showPanel();
     }
 
     // Update is called once per frame
@@ -71,22 +79,37 @@ public class PictureThisController : MonoBehaviour
 		}
 	}
 	
+	public void prepWords(){
+		wordList = wordList.Replace("\n","").Replace("\t","").Replace("}","");
+		string[] temp = wordList.Split(':')[1].Split('{');
+		for(int i = 0; i < temp.Length; i++){ //shuffle words
+			int r = rand.Next(0, temp.Length);
+			string aux = temp[i];
+			temp[i] = temp[r];
+			temp[r] = aux;
+		}
+		for(int i = 0; i < temp.Length; i++){ //assing words to each player
+			if(temp[i] != ""){
+				if(i%2 == 0) 
+					wordsP1.Add(temp[i]);
+				else
+					wordsP2.Add(temp[i]);
+			}
+		}
+	}
 	public void checkWord(){
 		
 	}
 	
-	public void updateWordLists(){
-		Dropdown d = wordListPicker.GetComponent<Dropdown>();
-		d.ClearOptions();
-		List<string> options = new List<string>();
-		string s = "";
-		for(int i = 1, index = PlayerPrefs.GetInt("PT_index", 0); i < index; i++){
-			if((s = PlayerPrefs.GetString("PT_"+i,"")) != "")
-				options.Add(s.Split(':')[0].Substring(1));
-		}
-		d.AddOptions(options);
+	public void showPanel(){
+		playersPanel.SetActive(true);
+		playersPanel.GetComponent<WordListPicker>().updateContent(player1, wordsP1);
 	}
-
+	
+	public void hidePanel(){
+		playersPanel.SetActive(false);
+	}
+	
 	public void pickColor(Color color){
 		currentColor = color;
 		updateHighlights();
@@ -156,35 +179,12 @@ public class PictureThisController : MonoBehaviour
 	public void changeSize(){
 		size = (int)slider.GetComponent<Slider>().value;
 		sizeLabel.GetComponent<Text>().text = "Size: " + size;
+		size += 3; //3 is a constant to make it more visible at lowest size
 	}
-	
-	public void exitGame(){
-		SceneManager.LoadScene("PictureThisMenu");	
-	}	
-	
-	public void exit(){
-		PlayerPrefs.Save();
-		Application.Quit();
-	}
-	
-	public void start(){
-		Debug.Log("Starting game with word list: "+wordList);
-		SceneManager.LoadScene("PictureThis");	
-	}
-	
-	public void newWordList(){
-		Debug.Log("New word list");
-		newWordListMenu.GetComponent<NewWordList>().show();
-	}
-	
-	public void editWordList(){
-		Debug.Log("Edit word list");
-		editWordListMenu.GetComponent<EditWordList>().show();
-	}
-	
+
 	public void paint(){
 		if(!inCanvas) return;
-       
+		
 		pointerED = new PointerEventData(eventSystem);
         //Set the Pointer Event Position to that of the mouse position
         pointerED.position = Input.mousePosition;
@@ -229,24 +229,13 @@ public class PictureThisController : MonoBehaviour
         texture.Apply();
         Cursor.SetCursor(texture, hotSpot, cursorMode);
     }
-/*
-		pointerImage.SetActive(true);
-		pointerImage.transform.position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
-	}*/
+
 	
 	public void stopHover(){
 		inCanvas = false;
 		Cursor.SetCursor(null, Vector2.zero, cursorMode);
-		//pointerImage.SetActive(false);
 	}
-	
-	public void letterPressed(){/*
-		Debug.Log("*********************"+wordInput.GetComponent<InputField>().text + "  cccccc? "+wordInput.GetComponent<InputField>().text.Length +"ANCHOR: " +wordInput.GetComponent<InputField>().selectionAnchorPosition );
-		wordInput.GetComponent<InputField>().selectionAnchorPosition = wordInput.GetComponent<InputField>().text.Length-1;
-		wordInput.GetComponent<InputField>().caretPosition = wordInput.GetComponent<InputField>().text.Length-1;*/
-		//wordTyped.GetComponent<InputField>().DeactivateInputField();
-	}
-	
+
 	public void selectedBrush(int type){
 		if(type == 0){
 			paintbrush = circleBrush;

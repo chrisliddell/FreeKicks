@@ -131,16 +131,12 @@ public class SingleplayerController : MonoBehaviour
 	
 	//swap shuffle
 	public void shuffleTest(){
-		 Debug.Log("OLD TEST:\n");
-		foreach(string s in questions) Debug.Log(s);
 		for(int i = 0; i < questions.Length; i++){
 			int r = rand.Next(0, questions.Length);
 			string temp = questions[i];
 			questions[i] = questions[r];
 			questions[r] = temp;
 		}
-		Debug.Log("NEW TEST:\n");
-		foreach(string s in questions) Debug.Log(s);
 	}
 
     public void shootMode(GameObject player)
