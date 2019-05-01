@@ -91,6 +91,7 @@
     <Compile Include="Assets\Scripts\TestButton.cs" />
     <Compile Include="Assets\Scripts\TestController.cs" />
     <Compile Include="Assets\Scripts\TestScrollView.cs" />
+    <Compile Include="Assets\Scripts\WordListPicker.cs" />
     <None Include="Assets\player\Info.txt" />
     <None Include="Assets\ColorPicker\license.txt" />
     <None Include="Assets\EasyGrassSubstance\Documentation.txt" />

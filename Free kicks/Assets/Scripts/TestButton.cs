@@ -40,6 +40,10 @@ public class TestButton : MonoBehaviour {
 		pickTestText.text = "Play: "+Name;
 	}
 
+	public void Word_Pick(){
+		ScrollView.WordPicked(Name);
+	}
+	
 	public void PT_Button_Click()
 	{
 		ScrollView.PT_ButtonClicked(index, Name, Type, qNum);

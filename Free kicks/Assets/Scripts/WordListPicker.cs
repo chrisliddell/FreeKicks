@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class WordListPicker : MonoBehaviour
 {
+	public GameObject controller;
 	public GameObject pickWordLabel;
 	public GameObject wordsPanel;
 	public GameObject circleBrush;
@@ -25,7 +26,13 @@ public class WordListPicker : MonoBehaviour
 	
 	public void updateContent(string p, List<string> words){
 		pickWordLabel.GetComponent<Text>().text = p+" pick a word to draw!";
-		wordsPanel.GetComponent<TestScrollView>().addContent(words);
+		wordsPanel.GetComponent<TestScrollView>().addWords(words);
+	}
+	
+	public void pickWord(string word){
+		wordsPanel.GetComponent<TestScrollView>().clear();
+		controller.GetComponent<PictureThisController>().currentWord = word;
+		controller.GetComponent<PictureThisController>().hidePanel();
 	}
 	/*
 	public void showPickTest(bool s){

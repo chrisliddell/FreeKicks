@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class PictureThisController : MonoBehaviour
 {
@@ -14,16 +15,22 @@ public class PictureThisController : MonoBehaviour
 	public GameObject highlightCircle;
 	public GameObject highlightRect;
 	public GameObject playersPanel;
+	public GameObject drawColorPicker;
+	public GameObject nextTurnPanel;
 	public Text wordTyped;
+	public Text drawingLabel;
+	public Text guessingLabel;
+	public Text correctLabel;
+	public Text timeoutLabel;
+	public Text closeEyesLabel;
 	public GameObject colorPicker;
 	public GameObject slider;
 	public GameObject sizeLabel;
 	public Texture2D cursorTexture;
     public CursorMode cursorMode = CursorMode.Auto;
     public Vector2 hotSpot = Vector2.zero;
-	public string wordList, letter;
-	public int index;
-	public int size = 1;
+	public string wordList, letter, currentWord;
+	public int index, currentPlayer = 1, size = 1;
 	PointerEventData pointerED;
 	const string textPlaceholder = "Type the word that's being drawn";
     EventSystem eventSystem;
@@ -53,6 +60,8 @@ public class PictureThisController : MonoBehaviour
 		}
 		player1 = PlayerPrefs.GetString("PT_player1", "Player 1");
 		player2 = PlayerPrefs.GetString("PT_player2", "Player 2");
+		currentPlayer = rand.Next(1, 3);
+		changeTurns();
 		changeSize();
 		updateHighlights();
 		showPanel();
@@ -97,17 +106,41 @@ public class PictureThisController : MonoBehaviour
 			}
 		}
 	}
-	public void checkWord(){
-		
-	}
 	
+	public void checkWord(){
+		if(wordTyped.text.Equals(currentWord, StringComparison.InvariantCultureIgnoreCase)){
+			Debug.Log("Correct");
+			drawColorPicker.SetActive(false);
+			nextTurnPanel.SetActive(true);
+			timeoutLabel.gameObject.SetActive(false);
+			correctLabel.gameObject.SetActive(true);
+			correctLabel.text = currentWord + " is correct!";
+			closeEyesLabel.text = (currentPlayer==1 ? player1 : player2 )+ " close your eyes while " + (currentPlayer==1 ? player2 : player1) + " picks a word.";
+			changeTurns();
+
+		} 
+		else{
+			Debug.Log("Incorrect");
+		}
+	}
+		
+	public void changeTurns(){
+		currentPlayer = currentPlayer==1 ? 2 : 1;
+		drawingLabel.text = currentPlayer == 1 ? player1 : player2;
+		guessingLabel.text = currentPlayer == 1 ? player2 : player1;
+	}
+		
 	public void showPanel(){
+		nextTurnPanel.SetActive(false);
 		playersPanel.SetActive(true);
-		playersPanel.GetComponent<WordListPicker>().updateContent(player1, wordsP1);
+		drawColorPicker.SetActive(false);
+		playersPanel.GetComponent<WordListPicker>().updateContent(currentPlayer==1 ? player1 : player2, wordsP1);
 	}
 	
 	public void hidePanel(){
 		playersPanel.SetActive(false);
+		drawColorPicker.SetActive(true);
+		wordTyped.text = "";
 	}
 	
 	public void pickColor(Color color){
@@ -163,7 +196,7 @@ public class PictureThisController : MonoBehaviour
 	}
 	
 	public void updateHighlights(){
-		if(highlightCircle.active){
+		if(highlightCircle.activeSelf){
 			highlightRect.SetActive(true);
 			highlightCircle.GetComponent<Image>().color = currentColor;
 			highlightRect.GetComponent<Image>().color = currentColor;
@@ -196,6 +229,7 @@ public class PictureThisController : MonoBehaviour
 		bool hitPanel = false;
 		foreach (RaycastResult result in results)
 		{
+			Debug.Log(result.gameObject.name);
 			if(result.gameObject.name == "DrawingPanel"){
 				hitPanel = true;
 				break;
@@ -204,7 +238,7 @@ public class PictureThisController : MonoBehaviour
 		}
 
 		if(hitPanel){
-			GameObject pI = Object.Instantiate(paintbrush, drawingPanel.transform);
+			GameObject pI = Instantiate(paintbrush, drawingPanel.transform) as GameObject;
 			pI.GetComponent<Image>().color = currentColor;
 			pI.GetComponent<RectTransform>().sizeDelta = new Vector2 (size, size);
 			Vector3 p = new Vector3(Input.mousePosition.x,  Input.mousePosition.y, 0);
@@ -247,6 +281,10 @@ public class PictureThisController : MonoBehaviour
 			highlightCircle.SetActive(false);
 			highlightRect.SetActive(true);
 		}
+	}
+	
+	public void exitGame(){
+		SceneManager.LoadScene("PictureThisMenu");
 	}
 	
 	public string checkLetter(){

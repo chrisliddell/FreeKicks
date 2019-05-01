@@ -23,7 +23,26 @@ public class TestScrollView : MonoBehaviour {
 			TB.SetName(str);
 			TB.SetIndex(index);
 			go.transform.SetParent(Button_Template.transform.parent);
+			go.transform.localScale = new Vector3(1,1,1);
 			index++;
+		}
+	}
+		
+	public void addWords(List<string> list){
+		for(int i = 0; i < list.Count; i++)
+		{
+			GameObject go;
+			if(i == 0)
+				go = Button_Template;
+			else 
+				go = Instantiate(Button_Template) as GameObject;
+			go.SetActive(true);
+			TestButton TB = go.GetComponent<TestButton>();
+			TB.SetName(list[i]);
+			TB.SetIndex(index);
+			go.transform.SetParent(Button_Template.transform.parent);
+			go.transform.localScale = new Vector3(1,1,1);
+			go.transform.localPosition = new Vector3(0,0,0);
 		}
 	}
 	
@@ -64,7 +83,6 @@ public class TestScrollView : MonoBehaviour {
 	}
 	
 	public void ButtonClicked(int id, string name, bool type, int q){ //type 0 = test, 1 = question
-		Debug.Log("Name: "+name + " button clicked. "+type + " index: "+id + " q#:"+q);
 		if(type)
 			Controller.GetComponent<EditTestController>().fillQuestion(id, q, name);
 		else
@@ -72,17 +90,19 @@ public class TestScrollView : MonoBehaviour {
 	}
 	
 	public void TestPicked(int id, string name){ 
-		Debug.Log("Name: "+name + " button clicked. index: "+id );
 		Controller.GetComponent<FreeKicksMenuController>().test = name;
 		Controller.GetComponent<FreeKicksMenuController>().index = id;
 	}
 	
 	public void PT_ButtonClicked(int id, string name, bool type, int w){ //type 0 = wordlist, 1 = word
-		Debug.Log("Name: "+name + " button clicked. "+type + " index: "+id + " w#:"+w);
 		if(type)
 			Controller.GetComponent<EditWordList>().fillWord(id, w, name);
 		else
 			Controller.GetComponent<EditWordList>().fillWordList(id, name);
+	}
+	
+	public void WordPicked(string name){ 
+		Controller.GetComponent<WordListPicker>().pickWord(name);
 	}
 	
 }
