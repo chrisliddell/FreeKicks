@@ -15,9 +15,14 @@ public class TestScrollView : MonoBehaviour {
 
 	public void addContent(List<string> list){
 		index = 1;
+		int i = 0;
 		foreach(string str in list)
 		{
-			GameObject go = Instantiate(Button_Template) as GameObject;
+			GameObject go;
+			if(i == 0)
+				go = Button_Template;
+			else 
+				go = Instantiate(Button_Template) as GameObject;
 			go.SetActive(true);
 			TestButton TB = go.GetComponent<TestButton>();
 			TB.SetName(str);
@@ -25,6 +30,7 @@ public class TestScrollView : MonoBehaviour {
 			go.transform.SetParent(Button_Template.transform.parent);
 			go.transform.localScale = new Vector3(1,1,1);
 			index++;
+			i++;
 		}
 	}
 		
@@ -48,15 +54,19 @@ public class TestScrollView : MonoBehaviour {
 	
 	public void addContent(List<string> list, int testId){
 		index = testId;
-		int i = 1;
+		int i = 0;
 		foreach(string str in list)
 		{
-			GameObject go = Instantiate(Button_Template) as GameObject;
+			GameObject go;
+			if(i == 0)
+				go = Button_Template;
+			else 
+				go = Instantiate(Button_Template) as GameObject;
 			go.SetActive(true);
 			TestButton TB = go.GetComponent<TestButton>();
 			TB.SetName(str);
 			TB.SetIndex(index);
-			TB.SetQNum(i);
+			TB.SetQNum(i+1);
 			go.transform.SetParent(Button_Template.transform.parent);
 			i++;
 		}

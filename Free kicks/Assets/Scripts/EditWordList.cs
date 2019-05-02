@@ -168,7 +168,6 @@ public class EditWordList : MonoBehaviour
 		clearWord();
 		Debug.Log("New WordList: "+editingWordList+"\n" + wordList);
 		PlayerPrefs.SetString("PT_"+editingWordList, wordList);
-		wordList = "";
 		editingWord = 0;
 		editingWordList = 0;
 	}
@@ -279,6 +278,7 @@ public class EditWordList : MonoBehaviour
 		Debug.Log("Adding word #"+editingWord);
 		wordsPanel.GetComponent<TestScrollView>().addContent(word.GetComponent<Text>().text, editingWordList, editingWord);
 		currentWord = word.GetComponent<Text>().text;
+		Debug.Log("^^^^ "+wordList.Length+" ///// "+wordList);
 		wordList = wordList.Substring(0, wordList.Length-1)+ "\t{\n\t\t" + currentWord +"\n\t}\n}";
 		saveWord();
 		madeChanges = true;

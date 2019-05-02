@@ -14,14 +14,17 @@ public class PictureThisController : MonoBehaviour
 	public GameObject rectBrush;
 	public GameObject highlightCircle;
 	public GameObject highlightRect;
+	public GameObject endPanel;
 	public GameObject playersPanel;
 	public GameObject drawColorPicker;
 	public GameObject nextTurnPanel;
 	public Text wordTyped;
-	public Text drawingLabel;
-	public Text guessingLabel;
+	public Text p1Label;
+	public Text p2Label;
 	public Text correctLabel;
 	public Text timeoutLabel;
+	public Text endLabel;
+	public Text pointsLabel;
 	public Text closeEyesLabel;
 	public GameObject colorPicker;
 	public GameObject slider;
@@ -30,7 +33,7 @@ public class PictureThisController : MonoBehaviour
     public CursorMode cursorMode = CursorMode.Auto;
     public Vector2 hotSpot = Vector2.zero;
 	public string wordList, letter, currentWord;
-	public int index, currentPlayer = 1, size = 1;
+	public int index, currentPlayer = 1, size = 1, points1 = 0, points2 = 0;
 	PointerEventData pointerED;
 	const string textPlaceholder = "Type the word that's being drawn";
     EventSystem eventSystem;
@@ -39,7 +42,7 @@ public class PictureThisController : MonoBehaviour
 	List<string> wordsP1;
 	List<string> wordsP2;
 	Color currentColor = Color.black;
-	bool inCanvas;
+	bool inCanvas, playing;
 	Ray ray;
 	RaycastHit hit;
     System.Random rand;
@@ -70,6 +73,8 @@ public class PictureThisController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		if(!playing) 
+			return;
 		if(Input.GetKeyDown(KeyCode.Backspace) && wordTyped.text != textPlaceholder){
 			if(wordTyped.text.Length > 1)
 				wordTyped.text = wordTyped.text.Remove(wordTyped.text.Length - 1); 
@@ -97,19 +102,29 @@ public class PictureThisController : MonoBehaviour
 			temp[i] = temp[r];
 			temp[r] = aux;
 		}
-		for(int i = 0; i < temp.Length; i++){ //assing words to each player
-			if(temp[i] != ""){
-				if(i%2 == 0) 
-					wordsP1.Add(temp[i]);
-				else
-					wordsP2.Add(temp[i]);
-			}
+		List<string> tempList = new List<string>();
+		foreach(string s in temp)
+			if(s!="") tempList.Add(s);
+		for(int i = 0; i < tempList.Count; i++){ //adding words to each player
+			if(i%2 == 0) 
+				wordsP1.Add(tempList[i]);
+			else
+				wordsP2.Add(tempList[i]);
 		}
 	}
 	
 	public void checkWord(){
 		if(wordTyped.text.Equals(currentWord, StringComparison.InvariantCultureIgnoreCase)){
 			Debug.Log("Correct");
+			playing = false;
+			if(currentPlayer==1){
+				wordsP1.Remove(currentWord);
+				points1 +=5;
+			}
+			else{
+				wordsP2.Remove(currentWord);
+				points2 +=5;
+			}
 			drawColorPicker.SetActive(false);
 			nextTurnPanel.SetActive(true);
 			timeoutLabel.gameObject.SetActive(false);
@@ -120,27 +135,58 @@ public class PictureThisController : MonoBehaviour
 
 		} 
 		else{
-			Debug.Log("Incorrect");
+			if(currentPlayer==1){
+				wordsP1.Remove(currentWord);
+				points2 -= points2 > 0 ? 1 : 0;
+				p2Label.text = player2 + ": " + points2;
+
+			}
+			else{
+				wordsP2.Remove(currentWord);
+				points1 -= points1 > 0 ? 1 : 0;
+				p1Label.text = player1 + ": " + points1;
+			}
 		}
 	}
 		
 	public void changeTurns(){
+		if(currentPlayer==1)
+			if(wordsP1.Count == 0) 
+				endGame();
+		else 
+			if(wordsP2.Count == 0) 
+				endGame();
 		currentPlayer = currentPlayer==1 ? 2 : 1;
-		drawingLabel.text = currentPlayer == 1 ? player1 : player2;
-		guessingLabel.text = currentPlayer == 1 ? player2 : player1;
+		p1Label.text = player1 + (currentPlayer == 1 ? " (drawing): " : ": ") + points1;
+		p2Label.text = player2 + (currentPlayer == 2 ? " (drawing): " : ": ") + points2;
 	}
+	
+	public void endGame(){
+		endPanel.SetActive(true);
+		if(points1 == points2)	
+			endLabel.text = "It's a draw!";
+		else
+			endLabel.text = points1>points2 ? "Congratulations "+ player1 +", you win!" : "Congratulations "+ player2 +", you win!";
 		
+		pointsLabel.text = player1+": "+points1+"\n\n"+player2+": "+points2;
+	}
+	
 	public void showPanel(){
 		nextTurnPanel.SetActive(false);
 		playersPanel.SetActive(true);
 		drawColorPicker.SetActive(false);
-		playersPanel.GetComponent<WordListPicker>().updateContent(currentPlayer==1 ? player1 : player2, wordsP1);
+		if(currentPlayer == 1)
+			playersPanel.GetComponent<WordListPicker>().updateContent(player1, wordsP1);	
+		else
+			playersPanel.GetComponent<WordListPicker>().updateContent(player2, wordsP2);
+		
 	}
 	
 	public void hidePanel(){
 		playersPanel.SetActive(false);
 		drawColorPicker.SetActive(true);
 		wordTyped.text = "";
+		playing = true;
 	}
 	
 	public void pickColor(Color color){
