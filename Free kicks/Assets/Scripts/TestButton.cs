@@ -31,7 +31,8 @@ public class TestButton : MonoBehaviour {
 	
 	public void Button_Click()
 	{
-		ScrollView.ButtonClicked(index, Name, Type, qNum);
+		if(Name != "") 
+			ScrollView.ButtonClicked(index, Name, Type, qNum);
 	}
 	
 	public void Test_Pick()
@@ -46,7 +47,8 @@ public class TestButton : MonoBehaviour {
 	
 	public void PT_Button_Click()
 	{
-		ScrollView.PT_ButtonClicked(index, Name, Type, qNum);
+		if(Name != "") 
+			ScrollView.PT_ButtonClicked(index, Name, Type, qNum);
 	}
 	
 }

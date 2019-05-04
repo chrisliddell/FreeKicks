@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class TestScrollView : MonoBehaviour {
 
@@ -88,6 +89,7 @@ public class TestScrollView : MonoBehaviour {
 	public void clear(){
 		var children = new List<GameObject>();
 		foreach (Transform child in gameObject.transform.GetChild(0)) children.Add(child.gameObject);
+		children[0].GetComponent<TestButton>().SetName("");
 		children.RemoveAt(0);
 		children.ForEach(child => Destroy(child));
 	}

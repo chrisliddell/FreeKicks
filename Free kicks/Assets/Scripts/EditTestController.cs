@@ -188,7 +188,6 @@ public class EditTestController : MonoBehaviour
 		clearQuestion();
 		Debug.Log("New Test: "+editingTest+"\n" + test);
 		PlayerPrefs.SetString(editingTest+"", test);
-		test = "";
 		editingQuestion = 0;
 		editingTest = 0;
 	}
@@ -290,6 +289,7 @@ public class EditTestController : MonoBehaviour
 	
 	public void editQuestion(){
 		if(editingQuestion == 0) return;
+		if(test == "") return;
 		string tName = testName.transform.parent.gameObject.GetComponent<InputField>().text;
 		Debug.Log("editing question #"+editingQuestion);
 		quest = question.GetComponent<Text>().text + ": [" + options[0].GetComponent<Text>().text + ", " + options[1].GetComponent<Text>().text + ", " + options[2].GetComponent<Text>().text + ", " + options[3].GetComponent<Text>().text+"]";
@@ -306,7 +306,8 @@ public class EditTestController : MonoBehaviour
 	
 	public void removeQuestion(){
 		if(editingQuestion == 0) return;
-		Debug.Log("Removing question #"+editingQuestion);
+		if(test == "") return;
+		Debug.Log("Removing question #"+editingQuestion+ "prevTest: "+test);
 		string tName = testName.transform.parent.gameObject.GetComponent<InputField>().text;
 		string[] questions = test.Split('{');
 		test = "{" + tName+":\n\t";
@@ -315,12 +316,14 @@ public class EditTestController : MonoBehaviour
 				test += "{"+questions[i];
 		}
 		madeChanges = true;
+		Debug.Log("new test: "+test);
 		saveQuestion();
 		updateTests();
 	}
 	
 	public void deleteTest(){
 		if(editingTest == 0) return;
+		if(test == "") return;
 		Debug.Log("Deleting test #"+editingTest);
 		List<string> list = new List<string>();
 		index = PlayerPrefs.GetInt("index", 0);
@@ -335,7 +338,7 @@ public class EditTestController : MonoBehaviour
 	}
 	
 	public void addQuestion(){
-		editingQuestion = questionsPanels.transform.GetChild(0).childCount;
+		editingQuestion = questionsPanels.transform.GetChild(0).childCount + 1;
 		Debug.Log("Adding question #"+editingQuestion);
 		questionsPanels.GetComponent<TestScrollView>().addContent(question.GetComponent<Text>().text, editingTest, editingQuestion);
 		quest = question.GetComponent<Text>().text + ": [" + options[0].GetComponent<Text>().text + ", " + options[1].GetComponent<Text>().text + ", " + options[2].GetComponent<Text>().text + ", " + options[3].GetComponent<Text>().text+"]";

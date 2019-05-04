@@ -8911,13 +8911,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1546425805}
   m_TextComponent: {fileID: 681173555}
   m_Placeholder: {fileID: 1433772397}
-  m_ContentType: 5
+  m_ContentType: 4
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 6
+  m_KeyboardType: 1
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 4
+  m_CharacterValidation: 3
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -11653,7 +11653,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 782808167}
-        m_MethodName: changeName
+        m_MethodName: saveName
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12394,13 +12394,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2087210130}
   m_TextComponent: {fileID: 1473870125}
   m_Placeholder: {fileID: 480702892}
-  m_ContentType: 0
+  m_ContentType: 4
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 1
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 3
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:

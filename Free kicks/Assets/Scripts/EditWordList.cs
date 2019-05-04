@@ -82,7 +82,7 @@ public class EditWordList : MonoBehaviour
 		wordListsPanel.GetComponent<TestScrollView>().clear();
 		wordsPanel.GetComponent<TestScrollView>().clear();
 		index = PlayerPrefs.GetInt("PT_index", 0);
-		Debug.Log("editing wordsLissts, current index: "+index);
+		Debug.Log("editing wordsLists, current index: "+index);
 		wordLists = new string[index];
 		for(int i = 1; i < index; i++){
 			if(PlayerPrefs.GetString("PT_"+i, "").Split(':')[0] != "")
@@ -166,7 +166,7 @@ public class EditWordList : MonoBehaviour
 
 	public void saveWord(){
 		clearWord();
-		Debug.Log("New WordList: "+editingWordList+"\n" + wordList);
+		Debug.Log("Saving wordlist: "+editingWordList+"\n" + wordList);
 		PlayerPrefs.SetString("PT_"+editingWordList, wordList);
 		editingWord = 0;
 		editingWordList = 0;
@@ -210,6 +210,7 @@ public class EditWordList : MonoBehaviour
 		editingWordList = id;
 		editingWord = wNum;
 		word.transform.parent.gameObject.GetComponent<InputField>().text = w;
+		Debug.Log("Clicked on word #"+editingWord+"  from wordlist #"+editingWordList);
 	}
 	
 	public void fillWordList(int id, string wL){
@@ -229,6 +230,7 @@ public class EditWordList : MonoBehaviour
 	
 	public void editWord(){
 		if(editingWord == 0) return;
+		if(wordList == "") return;
 		string wLName = wordListName.transform.parent.gameObject.GetComponent<InputField>().text;
 		Debug.Log("editing word #"+editingWord);
 		currentWord = word.GetComponent<Text>().text;
@@ -245,6 +247,7 @@ public class EditWordList : MonoBehaviour
 	
 	public void removeWord(){
 		if(editingWord == 0) return;
+		if(wordList == "") return;
 		Debug.Log("Removing word #"+editingWord);
 		string wLName = wordListName.transform.parent.gameObject.GetComponent<InputField>().text;
 		string[] words = wordList.Split('{');
@@ -260,6 +263,7 @@ public class EditWordList : MonoBehaviour
 		
 	public void deleteWordList(){
 		if(editingWordList == 0) return;
+		if(wordList == "") return;
 		Debug.Log("Deleting word list #"+editingWordList);
 		List<string> list = new List<string>();
 		index = PlayerPrefs.GetInt("PT_index", 0);
@@ -274,11 +278,11 @@ public class EditWordList : MonoBehaviour
 	}
 	
 	public void addWord(){
-		editingWord = wordsPanel.transform.GetChild(0).childCount;
-		Debug.Log("Adding word #"+editingWord);
+		if(wordList == "") return;
+		editingWord = wordsPanel.transform.GetChild(0).childCount + 1;
+		Debug.Log("Adding word #"+editingWord + " in wordlist #: "+editingWordList);
 		wordsPanel.GetComponent<TestScrollView>().addContent(word.GetComponent<Text>().text, editingWordList, editingWord);
 		currentWord = word.GetComponent<Text>().text;
-		Debug.Log("^^^^ "+wordList.Length+" ///// "+wordList);
 		wordList = wordList.Substring(0, wordList.Length-1)+ "\t{\n\t\t" + currentWord +"\n\t}\n}";
 		saveWord();
 		madeChanges = true;
