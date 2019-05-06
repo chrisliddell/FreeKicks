@@ -17,6 +17,7 @@ public class PictureThisController : MonoBehaviour
 	public GameObject endPanel;
 	public GameObject playersPanel;
 	public GameObject drawColorPicker;
+	public GameObject colorPicker;
 	public GameObject nextTurnPanel;
 	public Text wordTyped;
 	public Text p1Label;
@@ -26,7 +27,6 @@ public class PictureThisController : MonoBehaviour
 	public Text endLabel;
 	public Text pointsLabel;
 	public Text closeEyesLabel;
-	public GameObject colorPicker;
 	public GameObject slider;
 	public GameObject sizeLabel;
 	public Texture2D cursorTexture;
@@ -64,6 +64,7 @@ public class PictureThisController : MonoBehaviour
 		player1 = PlayerPrefs.GetString("PT_player1", "Player 1");
 		player2 = PlayerPrefs.GetString("PT_player2", "Player 2");
 		currentPlayer = rand.Next(1, 3);
+		colorPicker.GetComponent<ColorPicker>().startPos = new Vector2(Screen.width/3.8f, Screen.height/2);
 		changeTurns();
 		changeSize();
 		updateHighlights();
@@ -73,6 +74,7 @@ public class PictureThisController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		Debug.Log(Input.mousePosition);
 		if(!playing) 
 			return;
 		if(Input.GetKeyDown(KeyCode.Backspace) && wordTyped.text != textPlaceholder){
@@ -126,6 +128,7 @@ public class PictureThisController : MonoBehaviour
 				points2 +=5;
 			}
 			drawColorPicker.SetActive(false);
+			colorPicker.SetActive(false);
 			nextTurnPanel.SetActive(true);
 			timeoutLabel.gameObject.SetActive(false);
 			correctLabel.gameObject.SetActive(true);
@@ -175,6 +178,7 @@ public class PictureThisController : MonoBehaviour
 		nextTurnPanel.SetActive(false);
 		playersPanel.SetActive(true);
 		drawColorPicker.SetActive(false);
+		colorPicker.SetActive(false);
 		if(currentPlayer == 1)
 			playersPanel.GetComponent<WordListPicker>().updateContent(player1, wordsP1);	
 		else
@@ -185,8 +189,11 @@ public class PictureThisController : MonoBehaviour
 	public void hidePanel(){
 		playersPanel.SetActive(false);
 		drawColorPicker.SetActive(true);
+		colorPicker.SetActive(true);
 		wordTyped.text = "";
 		playing = true;
+		foreach(Transform child in drawingPanel.transform)  //clear canvas
+			Destroy(child.gameObject);
 	}
 	
 	public void pickColor(Color color){
@@ -297,7 +304,7 @@ public class PictureThisController : MonoBehaviour
     {
 		inCanvas = true;
 		Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
-		texture.alphaIsTransparency = true;
+		//texture.alphaIsTransparency = true;
 		Debug.Log("H: " + texture.height + "  W: " +texture.width);
         for (int y = 0; y < texture.height; y++)
         {
