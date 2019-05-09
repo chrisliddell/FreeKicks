@@ -42,7 +42,7 @@ public class PictureThisController : MonoBehaviour
 	List<string> wordsP1;
 	List<string> wordsP2;
 	Color currentColor = Color.black;
-	bool inCanvas, playing;
+	bool inCanvas, playing, freeMode;
 	Ray ray;
 	RaycastHit hit;
     System.Random rand;
@@ -55,26 +55,27 @@ public class PictureThisController : MonoBehaviour
 		raycaster = GetComponent<GraphicRaycaster>();
 		eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
        	index = PlayerPrefs.GetInt("PT_playingIndex", 0);
+		freeMode = (index == 0);
 		wordList = PlayerPrefs.GetString("PT_"+index, "");
 		wordsP1 = new List<string>();
 		wordsP2 = new List<string>();
-		if(wordList != ""){
-			prepWords();
-		}
+
 		player1 = PlayerPrefs.GetString("PT_player1", "Player 1");
 		player2 = PlayerPrefs.GetString("PT_player2", "Player 2");
 		currentPlayer = rand.Next(1, 3);
 		colorPicker.GetComponent<ColorPicker>().startPos = new Vector2(Screen.width/3.8f, Screen.height/2);
-		changeTurns();
 		changeSize();
-		updateHighlights();
-		showPanel();
+		if(wordList != ""){		
+			prepWords();
+			changeTurns();
+			updateHighlights();
+			showPanel();
+		}
     }
 
     // Update is called once per frame
     void Update()
     {
-		Debug.Log(Input.mousePosition);
 		if(!playing) 
 			return;
 		if(Input.GetKeyDown(KeyCode.Backspace) && wordTyped.text != textPlaceholder){
@@ -192,7 +193,11 @@ public class PictureThisController : MonoBehaviour
 		colorPicker.SetActive(true);
 		wordTyped.text = "";
 		playing = true;
-		foreach(Transform child in drawingPanel.transform)  //clear canvas
+		clearCanvas();
+	}
+	
+	public void clearCanvas(){
+		foreach(Transform child in drawingPanel.transform) 
 			Destroy(child.gameObject);
 	}
 	

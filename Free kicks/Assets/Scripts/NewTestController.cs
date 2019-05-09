@@ -31,12 +31,6 @@ public class NewTestController : MonoBehaviour
 		if(index == 0) index++;
 		Debug.Log("Adding test, current index: "+index);
 	}
-	
-	public void reset(){
-		PlayerPrefs.DeleteAll();
-		Debug.Log("Cleared all player preferences");
-		PlayerPrefs.SetInt("index", 0);
-	}
 
     // Update is called once per frame
     void Update()

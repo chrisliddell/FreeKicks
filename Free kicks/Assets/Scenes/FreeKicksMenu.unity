@@ -7866,8 +7866,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -3.5499992, y: 0}
-  m_SizeDelta: {x: 1196.1, y: 527}
+  m_AnchoredPosition: {x: -3.5499992, y: 3.1}
+  m_SizeDelta: {x: 1196.1, y: 592.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &749415300
 MonoBehaviour:
@@ -14456,9 +14456,7 @@ MonoBehaviour:
     then modifying the question as needed. Press Edit Question to save the changes
     or Remove Question to delete the question from the test. Keep in mind that all
     changes can be reverted by pressing the Cancel button, or permanently saved by
-    pressing the Finish button.\n\nResetting Tests:\n\nTo remove all existing tests,
-    go to the Edit Tests menu and click on the reset button located at the top right
-    corner of the screen."
+    pressing the Finish button.\n"
 --- !u!222 &1689435235
 CanvasRenderer:
   m_ObjectHideFlags: 0

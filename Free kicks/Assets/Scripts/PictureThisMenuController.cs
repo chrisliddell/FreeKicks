@@ -40,6 +40,7 @@ public class PictureThisMenuController : MonoBehaviour
 		List<string> options = new List<string>();
 		string s = "";
 		index = PlayerPrefs.GetInt("PT_index", 0);
+		options.Add("No word list");
 		for(int i = 1; i < index; i++){
 			if((s = PlayerPrefs.GetString("PT_"+i,"")) != "")
 				options.Add(s.Split(':')[0].Substring(1));
@@ -72,13 +73,9 @@ public class PictureThisMenuController : MonoBehaviour
 	}
 	
 	public void start(){
-		if(wordListPicker.GetComponent<Dropdown>().options.Count == 0){
-			Debug.Log("There are no wordlists");
-			return;
-		} 
-		player1 = Player1.GetComponent<Text>().text;
-		player2 = Player2.GetComponent<Text>().text;
-		index = wordListPicker.GetComponent<Dropdown>().value + 1;
+		player1 = Player1.GetComponent<Text>().text == "" ? "Player 1" : Player1.GetComponent<Text>().text;
+		player2 = Player2.GetComponent<Text>().text == "" ? "Player 2" : Player2.GetComponent<Text>().text;
+		index = wordListPicker.GetComponent<Dropdown>().value;
 		Debug.Log("Starting game with word list: "+index);
 		PlayerPrefs.SetInt("PT_playingIndex", index);
 		PlayerPrefs.SetString("PT_player1", player1);
