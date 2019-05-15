@@ -69,7 +69,7 @@ public class PictureThisMenuController : MonoBehaviour
 	
 	public void exit(){
 		PlayerPrefs.Save();
-		Application.Quit();
+		SceneManager.LoadScene("MainMenu");
 	}
 	
 	public void start(){

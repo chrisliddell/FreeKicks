@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour
     public GameObject enemyDefender;
 	public GameObject endPanel;
     public Slider powerSlider;
-	public GameObject questionsLeft;
+	public Text questionsLeft;
     System.Random rand;
     private IEnumerator coroutine;
     public Vector3[] team1DefensePositions = { new Vector3(-34.2f, 89f, -70f), new Vector3(-116f, -455f, -57f), new Vector3(-612f, -228f, -61f) };
@@ -87,16 +87,18 @@ public class GameController : MonoBehaviour
 		test.SetActive(false);
 		endPanel.SetActive(false);
 		index = PlayerPrefs.GetInt("playingIndex", 0);
+		questionsLeft.text = "";
 		if(index > 0){
 			testName = PlayerPrefs.GetString(index+"", "").Split(':')[0].Replace("{", "");
 			string[] temp = PlayerPrefs.GetString(index+"", "").Replace("\n", "").Replace("\t", "").Split('{');
 			questions = new string[temp.Length-2];
 			for(int i = 2; i < temp.Length; i++)
 				questions[i-2] = temp[i];
+			questionsLeft.text = "Questions Left: "+questions.Length;
 		}
 		qNum = 0;
 		
-		questionsLeft.GetComponent<Text>().text = "Questions Left: "+questions.Length;
+		
 		scoreP1.GetComponent<Text>().text = "0";
 		scoreP2.GetComponent<Text>().text = "0";
         playing = true;
@@ -275,7 +277,7 @@ public class GameController : MonoBehaviour
 			EndGame();
 			return;
 		}
-		questionsLeft.GetComponent<Text>().text = "Questions Left: "+(questions.Length-(qNum+1));
+		questionsLeft.text = "Questions Left: "+(questions.Length-(qNum+1));
         test.SetActive(true);
         var tc = test.GetComponent<TestController>();
 		tc.SetData(questions[qNum].Split(':')[0], questions[qNum].Split('[')[1].Split(']')[0].Split(','), questions[qNum].Split(']')[1].Split(':')[1].Replace("}", ""));

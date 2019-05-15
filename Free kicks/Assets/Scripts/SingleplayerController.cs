@@ -19,7 +19,7 @@ public class SingleplayerController : MonoBehaviour
 	public GameObject scoreText; 
     public Slider powerSlider;
 	public GameObject endPanel;
-	public GameObject questionsLeft;
+	public Text questionsLeft;
     System.Random rand;
     private IEnumerator coroutine;
     Vector3 cameraPos;
@@ -55,6 +55,7 @@ public class SingleplayerController : MonoBehaviour
         cameraPos = camera.transform.position;
         cameraRot = camera.transform.rotation;
         cameraFOV = Camera.main.fieldOfView;
+		questionsLeft.text = "";
         rand = new System.Random();
         test = GameObject.Find("Test");
         test.SetActive(false);
@@ -78,11 +79,12 @@ public class SingleplayerController : MonoBehaviour
 			questions = new string[temp.Length-2];
 			for(int i = 2; i < temp.Length; i++)
 				questions[i-2] = temp[i];
+			
+			questionsLeft.text = "Questions Left: "+questions.Length;		
+			if(shuffle) shuffleTest();
 		}
 		qNum = 0;
-		
-		questionsLeft.GetComponent<Text>().text = "Questions Left: "+questions.Length;
-		if(shuffle) shuffleTest();
+
 		scoreText.GetComponent<Text>().text = "0";
         int r = rand.Next(0, 4);
         Debug.Log("Starting game");
@@ -162,7 +164,7 @@ public class SingleplayerController : MonoBehaviour
             EndGame();
 			return;
 		}
-		questionsLeft.GetComponent<Text>().text = "Questions Left: "+(questions.Length-(qNum+1));
+		questionsLeft.text = "Questions Left: "+(questions.Length-(qNum+1));
         test.SetActive(true);
         var tc = test.GetComponent<TestController>();
 		tc.SetData(questions[qNum].Split(':')[0], questions[qNum].Split('[')[1].Split(']')[0].Split(','), questions[qNum].Split(']')[1].Split(':')[1].Replace("}", ""));

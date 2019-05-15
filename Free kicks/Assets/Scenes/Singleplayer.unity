@@ -3106,7 +3106,7 @@ MonoBehaviour:
   scoreText: {fileID: 1125149644}
   powerSlider: {fileID: 1015007842}
   endPanel: {fileID: 2070381256}
-  questionsLeft: {fileID: 793525674}
+  questionsLeft: {fileID: 793525676}
   power: 300
   maxPower: 1000
   timePressed: 0

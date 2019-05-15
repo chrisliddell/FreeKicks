@@ -2302,7 +2302,7 @@ MonoBehaviour:
   enemyDefender: {fileID: 394237484}
   endPanel: {fileID: 1000283173}
   powerSlider: {fileID: 90481437}
-  questionsLeft: {fileID: 434280860}
+  questionsLeft: {fileID: 434280862}
   team1DefensePositions:
   - {x: -34.2, y: 89, z: -70}
   - {x: -116, y: -455, z: -57}
