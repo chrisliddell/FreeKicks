@@ -11,6 +11,7 @@ public class FreeKicksMenuController : MonoBehaviour
 	public GameObject buttonHelp;
 	public GameObject infoPanel;
 	public GameObject helpPanel;
+	public GameObject warningPanel;
 	public GameObject blurPanel;
 	public GameObject newTestMenu;
 	public GameObject editTestMenu;
@@ -19,6 +20,8 @@ public class FreeKicksMenuController : MonoBehaviour
 	public GameObject buttonEditTest;
 	public GameObject testsList;
 	public GameObject shuffleQuestions;
+	public Dropdown team1Flag;
+	public Dropdown team2Flag;
 	public string test;
 	public int index;
 	bool singleplayer;
@@ -57,6 +60,10 @@ public class FreeKicksMenuController : MonoBehaviour
 	}
 	
 	public void showPickTest(bool s){
+		if(team1Flag.value == team2Flag.value){
+			showWarning();
+			return;
+		}
 		singleplayer = s;
 		blurPanel.SetActive(true);
 		pickTestPanel.SetActive(true);
@@ -111,5 +118,22 @@ public class FreeKicksMenuController : MonoBehaviour
 	public void editTest(){
 		Debug.Log("Edit word list");
 		editTestMenu.GetComponent<EditTestController>().show();
+	}
+	
+	public void changeFlag(int team){
+		if(team == 1)
+			team1Flag.gameObject.transform.GetChild(0).GetComponent<Image>().sprite = team1Flag.options[team1Flag.value].image;
+		else
+			team2Flag.gameObject.transform.GetChild(0).GetComponent<Image>().sprite = team2Flag.options[team2Flag.value].image;
+	}
+	
+	public void showWarning(){
+		warningPanel.SetActive(true);
+		blurPanel.SetActive(true);
+	}
+	
+	public void hideWarning(){
+		warningPanel.SetActive(false);
+		blurPanel.SetActive(false);
 	}
 }
