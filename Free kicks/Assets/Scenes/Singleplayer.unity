@@ -3111,6 +3111,16 @@ MonoBehaviour:
   maxPower: 1000
   timePressed: 0
   failedShot: 0
+  countries:
+  - {fileID: 2800000, guid: 8bf0cdddf1034714295768fec93962ac, type: 3}
+  - {fileID: 2800000, guid: c22d4f30196b45944bd8236dd7d8a25b, type: 3}
+  - {fileID: 2800000, guid: 647aadf2f381c45468d030547c3135b4, type: 3}
+  - {fileID: 2800000, guid: 1026ebaaf9f5ec447a106f89ab9537bd, type: 3}
+  - {fileID: 2800000, guid: 622c5f8a99e75ff4aa84fd0352554f1d, type: 3}
+  - {fileID: 2800000, guid: 4425dd6f78bcbe84fb92698a1ab33232, type: 3}
+  - {fileID: 2800000, guid: 0d7d440db4dc45a4ebed7c626d3684dd, type: 3}
+  - {fileID: 2800000, guid: 655852ad3fb473a4b8f1890b1bb77606, type: 3}
+  - {fileID: 2800000, guid: f999f90ca3adf644a9976e3479140fd2, type: 3}
 --- !u!1 &985101322
 GameObject:
   m_ObjectHideFlags: 0

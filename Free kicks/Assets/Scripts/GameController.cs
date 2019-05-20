@@ -46,6 +46,8 @@ public class GameController : MonoBehaviour
 	int qNum;
 	string testName;
 	string[] questions;
+	public Texture[] countries;
+	string country1, country2;
 
 
     // Start is called before the first frame update
@@ -66,6 +68,10 @@ public class GameController : MonoBehaviour
         goal1 = GameObject.Find("goal1");
         goal2 = GameObject.Find("goal2");
         ball = GameObject.Find("Ball");
+		country1 = PlayerPrefs.GetString("team1Country", "CR");
+		country2 = PlayerPrefs.GetString("team2Country", "Brazil");
+		colorPlayers(1);
+		colorPlayers(2);
         cameraPos = camera.transform.position;
         cameraRot = camera.transform.rotation;
         cameraFOV = Camera.main.fieldOfView;
@@ -135,6 +141,76 @@ public class GameController : MonoBehaviour
 			}
 		}
     }
+	
+		public void colorPlayers(int team){
+		//Image im = GameObject.Find(team == 1 ? country1 : country2).GetComponent<Image>();
+		int cNum = 0;
+		if(team == 1){
+			switch(country1){
+				case "Argentina": 
+					cNum = 0;
+				break;
+				case "Brazil": 
+					cNum = 1;
+				break;
+				case "CR": 
+					cNum = 2;
+				break;
+				case "England": 
+					cNum = 3;
+				break;
+				case "Germany": 
+					cNum = 4;
+				break;
+				case "Mexico": 
+					cNum = 5;
+				break;
+				case "Portugal": 
+					cNum = 6;
+				break;
+				case "Spain": 
+					cNum = 7;
+				break;
+				case "USA": 
+					cNum = 8;
+				break;
+			}
+			for(int i = 0; i < 3; i++)
+				players[i].gameObject.GetComponent<Renderer>().material.mainTexture = countries[cNum];
+		} else {
+			switch(country2){
+				case "Argentina": 
+					cNum = 0;
+				break;
+				case "Brazil": 
+					cNum = 1;
+				break;
+				case "CR": 
+					cNum = 2;
+				break;
+				case "England": 
+					cNum = 3;
+				break;
+				case "Germany": 
+					cNum = 4;
+				break;
+				case "Mexico": 
+					cNum = 5;
+				break;
+				case "Portugal": 
+					cNum = 6;
+				break;
+				case "Spain": 
+					cNum = 7;
+				break;
+				case "USA": 
+					cNum = 8;
+				break;
+			}
+			for(int i = 3; i < 6; i++)
+				players[i].gameObject.GetComponent<Renderer>().material.mainTexture = countries[cNum];
+		}
+	}
 
     public void reset() {
         StopAllCoroutines();

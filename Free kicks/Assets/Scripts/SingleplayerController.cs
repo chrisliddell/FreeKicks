@@ -29,18 +29,24 @@ public class SingleplayerController : MonoBehaviour
     public float maxPower = 1000f;
     public float timePressed = 0f;
 	public bool failedShot;
+	public Texture[] countries;
 	LineRenderer lineRenderer;
 	int index = 0;
 	int qNum;
 	string testName;
 	string[] questions;
 	bool shuffle;
+	string country1, country2;
 
 	
     // Start is called before the first frame update
     void Start()
     {
 		shuffle = PlayerPrefs.GetInt("shuffleTest", 0) == 1 ? true:false;
+		country1 = PlayerPrefs.GetString("team1Country", "CR");
+		country2 = PlayerPrefs.GetString("team2Country", "Brazil");
+		colorPlayers(1);
+		colorPlayers(2);
 		goalsScored = new Fraction();
 		correctAnswers = new Fraction();
 		lineRenderer = gameObject.GetComponent<LineRenderer>();
@@ -70,6 +76,7 @@ public class SingleplayerController : MonoBehaviour
 
     public void startGame()
     { 
+		Debug.Log("TEAM 1: "+country1+"\nTEAM: "+country2);
 	    test.SetActive(false);
 		endPanel.SetActive(false);
 		index = PlayerPrefs.GetInt("playingIndex", 0);
@@ -141,6 +148,77 @@ public class SingleplayerController : MonoBehaviour
 		}
 	}
 
+	public void colorPlayers(int team){
+		//Image im = GameObject.Find(team == 1 ? country1 : country2).GetComponent<Image>();
+		int cNum = 0;
+		if(team == 1){
+			switch(country1){
+				case "Argentina": 
+					cNum = 0;
+				break;
+				case "Brazil": 
+					cNum = 1;
+				break;
+				case "CR": 
+					cNum = 2;
+				break;
+				case "England": 
+					cNum = 3;
+				break;
+				case "Germany": 
+					cNum = 4;
+				break;
+				case "Mexico": 
+					cNum = 5;
+				break;
+				case "Portugal": 
+					cNum = 6;
+				break;
+				case "Spain": 
+					cNum = 7;
+				break;
+				case "USA": 
+					cNum = 8;
+				break;
+			}
+			striker.GetComponent<Renderer>().material.mainTexture = countries[cNum];
+		} else {
+			switch(country2){
+				case "Argentina": 
+					cNum = 0;
+				break;
+				case "Brazil": 
+					cNum = 1;
+				break;
+				case "CR": 
+					cNum = 2;
+				break;
+				case "England": 
+					cNum = 3;
+				break;
+				case "Germany": 
+					cNum = 4;
+				break;
+				case "Mexico": 
+					cNum = 5;
+				break;
+				case "Portugal": 
+					cNum = 6;
+				break;
+				case "Spain": 
+					cNum = 7;
+				break;
+				case "USA": 
+					cNum = 8;
+				break;
+			}
+			foreach(Transform go in barrier.transform)
+				go.gameObject.GetComponent<Renderer>().material.mainTexture = countries[cNum];
+			goalkeeper.GetComponent<Renderer>().material.mainTexture = countries[cNum];
+		}
+	}
+	
+	
     public void shootMode(GameObject player)
     {
 		striker.gameObject.SetActive(true);

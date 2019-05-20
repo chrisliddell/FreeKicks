@@ -99,6 +99,8 @@ public class FreeKicksMenuController : MonoBehaviour
 	public void startSinglePlayer(){
 		Debug.Log("Starting singleplayer with test: "+test+ " index: "+index);
 		PlayerPrefs.SetInt("playingIndex", index);
+		PlayerPrefs.SetString("team1Country", team1Flag.options[team1Flag.value].text);
+		PlayerPrefs.SetString("team2Country", team2Flag.options[team2Flag.value].text);
 		PlayerPrefs.SetInt("shuffleTest", shuffleQuestions.GetComponent<Toggle>().isOn?1:0);
 		SceneManager.LoadScene("Singleplayer");		
 	}
@@ -107,6 +109,8 @@ public class FreeKicksMenuController : MonoBehaviour
 		Debug.Log("Starting multiplayer with test: "+test+ " index: "+index);
 		PlayerPrefs.SetInt("playingIndex", index);
 		PlayerPrefs.SetInt("shuffleTest", shuffleQuestions.GetComponent<Toggle>().isOn?1:0);
+		PlayerPrefs.SetString("team1Country", team1Flag.options[team1Flag.value].text);
+		PlayerPrefs.SetString("team2Country", team2Flag.options[team2Flag.value].text);
 		SceneManager.LoadScene("Multiplayer");
 	}
 	
