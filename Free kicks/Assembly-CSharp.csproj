@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\ArenaController.cs" />
     <Compile Include="Assets\Scripts\BallController.cs" />
     <Compile Include="Assets\Scripts\BarrierController.cs" />
+    <Compile Include="Assets\Scripts\Chronometer.cs" />
     <Compile Include="Assets\Scripts\EditTestController.cs" />
     <Compile Include="Assets\Scripts\EditWordList.cs" />
     <Compile Include="Assets\Scripts\Fraction.cs" />

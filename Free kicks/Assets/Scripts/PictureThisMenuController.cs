@@ -18,8 +18,12 @@ public class PictureThisMenuController : MonoBehaviour
 	public GameObject WordLists;
 	public GameObject Player1;
 	public GameObject Player2;
+	public Toggle timerToggle;
+	public Text timeLabel;
 	public string wordList;
 	public int index;
+	bool timer;
+	int minutes;
 	string player1, player2;
     // Start is called before the first frame update
     void Start()
@@ -72,7 +76,26 @@ public class PictureThisMenuController : MonoBehaviour
 		SceneManager.LoadScene("MainMenu");
 	}
 	
+	public void enableTime(){
+		InputField input = GameObject.Find("minutes").GetComponent<InputField>();
+		if(timerToggle.isOn){
+			input.interactable = true;
+		} 
+		else{
+			input.text = "";
+			input.interactable = false;
+		}	
+	}
+	
 	public void start(){
+		if(timerToggle.isOn){
+			if(timeLabel.text == "" || timeLabel.text == "0" ||timeLabel.text == "00")
+				minutes = 1;
+			else
+				minutes = int.Parse(timeLabel.text);
+		} else
+			minutes = 99;
+		PlayerPrefs.SetInt("PT_timer", minutes);
 		player1 = Player1.GetComponent<Text>().text == "" ? "Player 1" : Player1.GetComponent<Text>().text;
 		player2 = Player2.GetComponent<Text>().text == "" ? "Player 2" : Player2.GetComponent<Text>().text;
 		index = wordListPicker.GetComponent<Dropdown>().value;

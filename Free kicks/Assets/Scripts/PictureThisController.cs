@@ -16,9 +16,11 @@ public class PictureThisController : MonoBehaviour
 	public GameObject highlightRect;
 	public GameObject endPanel;
 	public GameObject playersPanel;
+	public GameObject blockPanel;
 	public GameObject drawColorPicker;
 	public GameObject colorPicker;
 	public GameObject nextTurnPanel;
+	public GameObject timer;
 	public Text wordTyped;
 	public Text p1Label;
 	public Text p2Label;
@@ -42,6 +44,7 @@ public class PictureThisController : MonoBehaviour
 	List<string> wordsP1;
 	List<string> wordsP2;
 	Color currentColor = Color.black;
+	float maxTime;
 	bool inCanvas, playing, freeMode;
 	Ray ray;
 	RaycastHit hit;
@@ -59,7 +62,7 @@ public class PictureThisController : MonoBehaviour
 		wordList = PlayerPrefs.GetString("PT_"+index, "");
 		wordsP1 = new List<string>();
 		wordsP2 = new List<string>();
-
+		maxTime = (float) PlayerPrefs.GetInt("PT_timer", 1);
 		player1 = PlayerPrefs.GetString("PT_player1", "Player 1");
 		player2 = PlayerPrefs.GetString("PT_player2", "Player 2");
 		currentPlayer = rand.Next(1, 3);
@@ -76,6 +79,11 @@ public class PictureThisController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		if(timer.GetComponent<Chronometer>().getMinutes() > maxTime){
+			timer.GetComponent<Chronometer>().reset();
+			timeOut();
+			return;
+		}
 		if(!playing) 
 			return;
 		if(Input.GetKeyDown(KeyCode.Backspace) && wordTyped.text != textPlaceholder){
@@ -116,8 +124,20 @@ public class PictureThisController : MonoBehaviour
 		}
 	}
 	
+	public void timeOut(){
+		drawColorPicker.SetActive(false);
+		colorPicker.SetActive(false);
+		nextTurnPanel.SetActive(true);
+		timeoutLabel.gameObject.SetActive(true);
+		correctLabel.gameObject.SetActive(false);
+		closeEyesLabel.text = (currentPlayer==1 ? player1 : player2 )+ " close your eyes while " + (currentPlayer==1 ? player2 : player1) + " picks a word.";
+		changeTurns();
+		
+	}
+	
 	public void checkWord(){
 		if(wordTyped.text.Equals(currentWord, StringComparison.InvariantCultureIgnoreCase)){
+			timer.GetComponent<Chronometer>().reset();
 			Debug.Log("Correct");
 			playing = false;
 			if(currentPlayer==1){
@@ -177,6 +197,7 @@ public class PictureThisController : MonoBehaviour
 	
 	public void showPanel(){
 		nextTurnPanel.SetActive(false);
+		blockPanel.SetActive(true);
 		playersPanel.SetActive(true);
 		drawColorPicker.SetActive(false);
 		colorPicker.SetActive(false);
@@ -189,10 +210,12 @@ public class PictureThisController : MonoBehaviour
 	
 	public void hidePanel(){
 		playersPanel.SetActive(false);
+		blockPanel.SetActive(false);
 		drawColorPicker.SetActive(true);
 		colorPicker.SetActive(true);
 		wordTyped.text = "";
 		playing = true;
+		timer.GetComponent<Chronometer>().start();
 		clearCanvas();
 	}
 	
